@@ -20,7 +20,7 @@ class DashboardController extends Controller
                 ['label' => 'Departures', 'href' => '#departures', 'code' => 'DP'],
                 ['label' => 'Regions', 'href' => '#regions', 'code' => 'RG'],
                 ['label' => 'Concierge', 'href' => '#concierge', 'code' => 'CQ'],
-                ['label' => 'Content', 'href' => '#content-editor', 'code' => 'CT'],
+                ['label' => 'Homepage Content', 'href' => '#content-editor', 'code' => 'HC'],
             ],
             'hero' => [
                 'eyebrow' => 'Safari operations dashboard',
