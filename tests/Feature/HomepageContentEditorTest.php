@@ -24,8 +24,8 @@ class HomepageContentEditorTest extends TestCase
             ->assertOk()
             ->assertSeeText('Shape the public homepage in one focused workspace.')
             ->assertSeeText('Homepage sections')
-            ->assertSeeText('Brand')
-            ->assertSeeText('Logo');
+            ->assertSeeText('Edit homepage content and upload your logo.')
+            ->assertSeeText('Upload logo');
     }
 
     public function test_authenticated_dashboard_users_can_update_homepage_content_and_upload_a_logo(): void

@@ -22,8 +22,8 @@
         </header>
 
         <main class="homepage-editor-main">
-            <section class="homepage-editor-hero" data-reveal>
-                <div class="container">
+            <section class="homepage-editor-hero">
+                <div class="container homepage-editor-hero__inner">
                     <p class="homepage-editor-hero__eyebrow">Homepage content</p>
                     <h1>Shape the public homepage in one focused workspace.</h1>
                     <p>Edit the copy, manage section flow and upload the logo from a quieter white-theme editor built just for the website.</p>
@@ -34,34 +34,6 @@
                             <span class="homepage-editor-pill">Last updated {{ $homepageLastUpdatedAt }}</span>
                         @endif
                     </div>
-                </div>
-            </section>
-
-            <section class="homepage-editor-focus" data-reveal>
-                <div class="container homepage-editor-focus__grid">
-                    <article class="homepage-editor-focus__card">
-                        <span class="homepage-editor-focus__mark" aria-hidden="true"></span>
-                        <h2>Brand & Logo</h2>
-                        <p>Update the site name, metadata and upload the homepage logo from one place.</p>
-                    </article>
-
-                    <article class="homepage-editor-focus__card">
-                        <span class="homepage-editor-focus__mark" aria-hidden="true"></span>
-                        <h2>Hero Message</h2>
-                        <p>Adjust the first impression, supporting copy and homepage call-to-action labels.</p>
-                    </article>
-
-                    <article class="homepage-editor-focus__card">
-                        <span class="homepage-editor-focus__mark" aria-hidden="true"></span>
-                        <h2>Section Flow</h2>
-                        <p>Work through journeys, experiences, FAQ and footer content in a single editing route.</p>
-                    </article>
-
-                    <article class="homepage-editor-focus__card">
-                        <span class="homepage-editor-focus__mark" aria-hidden="true"></span>
-                        <h2>Public Preview</h2>
-                        <p>Open the live homepage anytime to confirm the tone, spacing and final copy.</p>
-                    </article>
                 </div>
             </section>
 

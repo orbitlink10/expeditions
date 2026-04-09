@@ -13,7 +13,7 @@
     ];
 @endphp
 
-<section class="editor-section" id="content-editor" data-reveal data-dashboard-section>
+<section class="editor-section" id="content-editor" data-dashboard-section>
     <div class="container">
         <div class="editor-head">
             <div>

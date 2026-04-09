@@ -2,6 +2,7 @@ import './bootstrap';
 
 document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
+    body.classList.add('has-reveal');
     const header = document.querySelector('[data-header]');
     const menuToggle = document.querySelector('[data-menu-toggle]');
     const menuDrawer = document.querySelector('[data-menu-drawer]');
