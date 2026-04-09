@@ -13,5 +13,6 @@ Route::post('/logout', [DashboardAuthController::class, 'destroy'])->name('logou
 
 Route::middleware('dashboard.auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard/homepage', [HomepageContentController::class, 'edit'])->name('dashboard.homepage.edit');
     Route::post('/dashboard/homepage', [HomepageContentController::class, 'update'])->name('dashboard.homepage.update');
 });

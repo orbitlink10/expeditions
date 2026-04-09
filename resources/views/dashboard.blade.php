@@ -26,8 +26,10 @@
                         <a
                             class="dashboard-nav__link{{ $loop->first ? ' is-active' : '' }}"
                             href="{{ $link['href'] }}"
-                            data-dashboard-link
-                            data-dashboard-target="{{ ltrim($link['href'], '#') }}"
+                            @if (str_starts_with($link['href'], '#'))
+                                data-dashboard-link
+                                data-dashboard-target="{{ ltrim($link['href'], '#') }}"
+                            @endif
                         >
                             <span class="dashboard-nav__icon" aria-hidden="true">{{ $link['code'] }}</span>
                             <strong>{{ $link['label'] }}</strong>
@@ -87,7 +89,7 @@
 
                                 <div class="dashboard-hero__actions">
                                     <a class="button button--accent" href="#departures">Open departure board</a>
-                                    <a class="dashboard-button-secondary" href="#content-editor">Edit homepage content</a>
+                                    <a class="dashboard-button-secondary" href="{{ route('dashboard.homepage.edit') }}">Edit homepage content</a>
                                 </div>
                             </div>
 
@@ -271,7 +273,6 @@
                         </div>
                     </section>
 
-                    @include('partials.dashboard-homepage-editor')
                 </main>
             </div>
         </div>

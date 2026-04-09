@@ -6,9 +6,20 @@ use App\Support\HomepageContentManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\View\View;
 
 class HomepageContentController extends Controller
 {
+    public function edit(Request $request, HomepageContentManager $homepageContentManager): View
+    {
+        return view('homepage-editor', [
+            'title' => 'Caracal Expeditions | Homepage Content Editor',
+            'description' => 'Edit homepage sections, upload the brand logo and manage the public-facing Caracal Expeditions homepage.',
+            'dashboardUser' => (string) $request->session()->get('dashboard_username', config('dashboard.username')),
+            ...$homepageContentManager->getDashboardEditorData(),
+        ]);
+    }
+
     public function update(Request $request, HomepageContentManager $homepageContentManager): RedirectResponse
     {
         $validated = $request->validate([
@@ -94,7 +105,7 @@ class HomepageContentController extends Controller
         );
 
         return redirect()
-            ->to(route('dashboard').'#content-editor')
+            ->to(route('dashboard.homepage.edit').'#content-editor')
             ->with('status', 'Homepage content saved.');
     }
 }

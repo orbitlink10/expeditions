@@ -27,6 +27,14 @@ class DashboardAuthTest extends TestCase
             ->assertRedirect(route('login'));
     }
 
+    public function test_guests_are_redirected_to_the_login_page_from_the_homepage_content_editor(): void
+    {
+        $response = $this->get('/dashboard/homepage');
+
+        $response
+            ->assertRedirect(route('login'));
+    }
+
     public function test_the_login_page_loads_successfully(): void
     {
         $response = $this->get('/login');

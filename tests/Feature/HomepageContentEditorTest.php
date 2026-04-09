@@ -13,6 +13,21 @@ class HomepageContentEditorTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_authenticated_dashboard_users_can_open_the_homepage_content_page(): void
+    {
+        $this
+            ->withSession([
+                'dashboard_authenticated' => true,
+                'dashboard_username' => config('dashboard.username'),
+            ])
+            ->get(route('dashboard.homepage.edit'))
+            ->assertOk()
+            ->assertSeeText('Shape the public homepage in one focused workspace.')
+            ->assertSeeText('Homepage sections')
+            ->assertSeeText('Brand')
+            ->assertSeeText('Logo');
+    }
+
     public function test_authenticated_dashboard_users_can_update_homepage_content_and_upload_a_logo(): void
     {
         $payload = app(HomepageContentManager::class)->getDashboardEditorData()['homepageContent'];
@@ -34,7 +49,7 @@ class HomepageContentEditorTest extends TestCase
             ]);
 
         $response
-            ->assertRedirect(route('dashboard').'#content-editor')
+            ->assertRedirect(route('dashboard.homepage.edit').'#content-editor')
             ->assertSessionHas('status', 'Homepage content saved.');
 
         $record = HomepageContent::query()->firstWhere('page', 'home');
