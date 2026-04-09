@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        if (Schema::hasTable('homepage_contents')) {
+            return;
+        }
+
+        Schema::create('homepage_contents', function (Blueprint $table): void {
+            $table->id();
+            $table->string('page')->unique();
+            $table->string('logo_path')->nullable();
+            $table->json('content')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('homepage_contents');
+    }
+};
