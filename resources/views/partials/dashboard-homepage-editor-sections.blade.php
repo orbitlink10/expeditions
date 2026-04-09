@@ -1,5 +1,5 @@
 <div class="editor-grid">
-    <article class="editor-card editor-card--wide">
+    <article class="editor-card editor-card--wide" id="editor-section-copy" data-editor-section>
         <div class="dashboard-panel__head">
             <div>
                 <p class="dashboard-panel__eyebrow">Section copy</p>
@@ -90,7 +90,7 @@
         </div>
     </article>
 
-    <article class="editor-card editor-card--wide">
+    <article class="editor-card editor-card--wide" id="editor-destinations" data-editor-section>
         <div class="dashboard-panel__head">
             <div>
                 <p class="dashboard-panel__eyebrow">Destination cards</p>
@@ -130,7 +130,7 @@
         </div>
     </article>
 
-    <article class="editor-card editor-card--wide">
+    <article class="editor-card editor-card--wide" id="editor-journeys" data-editor-section>
         <div class="dashboard-panel__head">
             <div>
                 <p class="dashboard-panel__eyebrow">Signature journeys</p>
@@ -180,7 +180,7 @@
         </div>
     </article>
 
-    <article class="editor-card editor-card--wide">
+    <article class="editor-card editor-card--wide" id="editor-experiences" data-editor-section>
         <div class="dashboard-panel__head">
             <div>
                 <p class="dashboard-panel__eyebrow">Experiences</p>
@@ -220,7 +220,7 @@
         </div>
     </article>
 
-    <article class="editor-card editor-card--wide">
+    <article class="editor-card editor-card--wide" id="editor-faqs" data-editor-section>
         <div class="dashboard-panel__head">
             <div>
                 <p class="dashboard-panel__eyebrow">FAQs</p>

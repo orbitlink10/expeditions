@@ -1,3 +1,18 @@
+@php
+    $editorSections = [
+        ['id' => 'editor-brand-seo', 'code' => 'BR', 'label' => 'Brand and SEO', 'detail' => 'Logo, name and metadata'],
+        ['id' => 'editor-menu-drawer', 'code' => 'MN', 'label' => 'Menu drawer', 'detail' => 'Top navigation callout'],
+        ['id' => 'editor-hero', 'code' => 'HR', 'label' => 'Hero', 'detail' => 'Main landing section'],
+        ['id' => 'editor-feature-band', 'code' => 'FB', 'label' => 'Feature band', 'detail' => 'Introductory message'],
+        ['id' => 'editor-story', 'code' => 'ST', 'label' => 'Story', 'detail' => 'Editorial section copy'],
+        ['id' => 'editor-section-copy', 'code' => 'CP', 'label' => 'Section copy', 'detail' => 'Journeys, FAQ and footer'],
+        ['id' => 'editor-destinations', 'code' => 'DS', 'label' => 'Destinations', 'detail' => 'Homepage destination cards'],
+        ['id' => 'editor-journeys', 'code' => 'JR', 'label' => 'Journeys', 'detail' => 'Signature journey cards'],
+        ['id' => 'editor-experiences', 'code' => 'XP', 'label' => 'Experiences', 'detail' => 'Experience cards'],
+        ['id' => 'editor-faqs', 'code' => 'FQ', 'label' => 'FAQs', 'detail' => 'Question cards'],
+    ];
+@endphp
+
 <section class="editor-section" id="content-editor" data-reveal data-dashboard-section>
     <div class="container">
         <div class="editor-head">
@@ -24,8 +39,40 @@
         <form class="editor-form" method="POST" action="{{ route('dashboard.homepage.update') }}" enctype="multipart/form-data">
             @csrf
 
-            <div class="editor-grid">
-                <article class="editor-card">
+            <div class="editor-shell">
+                <aside class="editor-menu">
+                    <div class="editor-menu__head">
+                        <p class="dashboard-panel__eyebrow">Edit menu</p>
+                        <h3>Homepage sections</h3>
+                        <p>Jump straight to the part of the homepage you want to revise.</p>
+                    </div>
+
+                    <nav class="editor-menu__nav" aria-label="Homepage editor sections">
+                        @foreach ($editorSections as $section)
+                            <a
+                                class="editor-menu__link{{ $loop->first ? ' is-active' : '' }}"
+                                href="#{{ $section['id'] }}"
+                                data-editor-link
+                                data-editor-target="{{ $section['id'] }}"
+                            >
+                                <span class="editor-menu__code" aria-hidden="true">{{ $section['code'] }}</span>
+                                <span>
+                                    <strong>{{ $section['label'] }}</strong>
+                                    <small>{{ $section['detail'] }}</small>
+                                </span>
+                            </a>
+                        @endforeach
+                    </nav>
+
+                    <div class="editor-menu__meta">
+                        <span class="dashboard-panel__badge">{{ count($editorSections) }} editing groups</span>
+                        <a class="dashboard-chip" href="{{ route('home') }}" target="_blank" rel="noreferrer">Preview homepage</a>
+                    </div>
+                </aside>
+
+                <div class="editor-form__body">
+                    <div class="editor-grid">
+                <article class="editor-card" id="editor-brand-seo" data-editor-section>
                     <div class="dashboard-panel__head">
                         <div>
                             <p class="dashboard-panel__eyebrow">Brand and SEO</p>
@@ -78,7 +125,7 @@
                     </div>
                 </article>
 
-                <article class="editor-card">
+                <article class="editor-card" id="editor-menu-drawer" data-editor-section>
                     <div class="dashboard-panel__head">
                         <div>
                             <p class="dashboard-panel__eyebrow">Menu drawer</p>
@@ -109,7 +156,7 @@
                     </div>
                 </article>
 
-                <article class="editor-card editor-card--wide">
+                <article class="editor-card editor-card--wide" id="editor-hero" data-editor-section>
                     <div class="dashboard-panel__head">
                         <div>
                             <p class="dashboard-panel__eyebrow">Hero section</p>
@@ -179,7 +226,7 @@
                     </div>
                 </article>
 
-                <article class="editor-card">
+                <article class="editor-card" id="editor-feature-band" data-editor-section>
                     <div class="dashboard-panel__head">
                         <div>
                             <p class="dashboard-panel__eyebrow">Feature band</p>
@@ -210,7 +257,7 @@
                     </div>
                 </article>
 
-                <article class="editor-card">
+                <article class="editor-card" id="editor-story" data-editor-section>
                     <div class="dashboard-panel__head">
                         <div>
                             <p class="dashboard-panel__eyebrow">Story section</p>
@@ -254,9 +301,11 @@
                         @endforeach
                     </div>
                 </article>
-            </div>
+                    </div>
 
-            @include('partials.dashboard-homepage-editor-sections')
+                    @include('partials.dashboard-homepage-editor-sections')
+                </div>
+            </div>
 
             <div class="editor-actions">
                 <button class="button button--accent" type="submit">Save homepage content</button>

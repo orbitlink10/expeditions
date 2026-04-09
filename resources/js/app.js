@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dashboardSidebarClose = document.querySelector('[data-dashboard-sidebar-close]');
     const dashboardLinks = Array.from(document.querySelectorAll('[data-dashboard-link]'));
     const dashboardSections = Array.from(document.querySelectorAll('[data-dashboard-section]'));
+    const editorLinks = Array.from(document.querySelectorAll('[data-editor-link]'));
+    const editorSections = Array.from(document.querySelectorAll('[data-editor-section]'));
     const searchInput = document.querySelector('[data-search-input]');
     const searchCards = Array.from(document.querySelectorAll('[data-search-card]'));
     const searchFeedback = document.querySelector('[data-search-feedback]');
@@ -53,6 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dashboardLinks.forEach((link) => {
             link.classList.toggle('is-active', link.dataset.dashboardTarget === targetId);
+        });
+    };
+
+    const setActiveEditorLink = (targetId) => {
+        if (editorLinks.length === 0) {
+            return;
+        }
+
+        editorLinks.forEach((link) => {
+            link.classList.toggle('is-active', link.dataset.editorTarget === targetId);
         });
     };
 
@@ -189,6 +201,48 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardSections.forEach((section) => {
             if (section.id) {
                 dashboardObserver.observe(section);
+            }
+        });
+    }
+
+    if (editorLinks.length > 0 && editorSections.length > 0) {
+        const hashTarget = window.location.hash.replace('#', '');
+
+        if (hashTarget) {
+            setActiveEditorLink(hashTarget);
+        }
+
+        editorLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                const targetId = link.dataset.editorTarget;
+
+                if (targetId) {
+                    setActiveEditorLink(targetId);
+                }
+            });
+        });
+
+        const editorObserver = new IntersectionObserver(
+            (entries) => {
+                const visibleEntry = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((first, second) => second.intersectionRatio - first.intersectionRatio)[0];
+
+                if (!visibleEntry) {
+                    return;
+                }
+
+                setActiveEditorLink(visibleEntry.target.id);
+            },
+            {
+                threshold: [0.2, 0.4, 0.65],
+                rootMargin: '-16% 0px -58% 0px',
+            },
+        );
+
+        editorSections.forEach((section) => {
+            if (section.id) {
+                editorObserver.observe(section);
             }
         });
     }
