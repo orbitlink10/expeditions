@@ -35,17 +35,17 @@
         <style>
             .whatsapp-button {
                 position: fixed;
-                bottom: 20px;
-                right: 20px;
-                width: 60px;
-                height: 60px;
+                bottom: 25px;
+                right: 25px;
+                width: 65px;
+                height: 65px;
                 background-color: #25D366;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 text-decoration: none;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
                 z-index: 1000;
                 transition: all 0.3s ease;
             }
@@ -53,26 +53,26 @@
             .whatsapp-button:hover {
                 background-color: #20BA5A;
                 transform: scale(1.1);
-                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
             }
 
             .whatsapp-button svg {
-                width: 35px;
-                height: 35px;
+                width: 36px;
+                height: 36px;
                 fill: white;
             }
 
             @media (max-width: 768px) {
                 .whatsapp-button {
-                    width: 50px;
-                    height: 50px;
-                    bottom: 15px;
-                    right: 15px;
+                    width: 55px;
+                    height: 55px;
+                    bottom: 20px;
+                    right: 20px;
                 }
 
                 .whatsapp-button svg {
-                    width: 28px;
-                    height: 28px;
+                    width: 30px;
+                    height: 30px;
                 }
             }
         </style>

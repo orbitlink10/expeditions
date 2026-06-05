@@ -249,12 +249,6 @@
             </div>
         </footer>
 
-        <a class="floating-chat" href="mailto:journeys@caracalexpeditions.com?subject=Caracal%20Expeditions%20Enquiry">
-            <span class="floating-chat__copy">
-                <strong>{{ $footer['chatTitle'] }}</strong>
-                <span>{{ $footer['chatBody'] }}</span>
-            </span>
-            <span class="floating-chat__icon" aria-hidden="true">?</span>
-        </a>
+
     </div>
 @endsection
