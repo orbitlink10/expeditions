@@ -64,15 +64,22 @@
 
                     <div class="enquiry-form__grid">
                         <label class="enquiry-field">
-                            <span>Number of adults</span>
-                            <input name="adults" type="number" inputmode="numeric" min="1">
+                            <span>Number of adults *</span>
+                            <input name="adults" type="number" inputmode="numeric" min="1" required>
                         </label>
 
                         <label class="enquiry-field">
                             <span>Number of children</span>
-                            <input name="children" type="number" inputmode="numeric" min="0">
+                            <input name="children" type="number" inputmode="numeric" min="0" data-children-count>
                         </label>
+                    </div>
 
+                    <div class="enquiry-children-ages" data-children-ages hidden>
+                        <p>Ages of children</p>
+                        <div class="enquiry-children-ages__grid" data-children-age-fields></div>
+                    </div>
+
+                    <div class="enquiry-form__grid">
                         <label class="enquiry-field">
                             <span>Arrival date</span>
                             <input name="arrival_date" type="date">

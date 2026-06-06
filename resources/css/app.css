@@ -1014,6 +1014,30 @@ body.menu-open .menu-drawer {
     gap: 1.35rem 3rem;
 }
 
+.enquiry-children-ages {
+    display: grid;
+    gap: 1rem;
+}
+
+.enquiry-children-ages[hidden] {
+    display: none;
+}
+
+.enquiry-children-ages > p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.enquiry-children-ages__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.35rem 2rem;
+}
+
 .enquiry-field {
     display: grid;
     gap: 0.35rem;
@@ -2745,7 +2769,8 @@ body.dashboard-sidebar-open .dashboard-sidebar-scrim {
     .destination-grid,
     .faq-grid,
     .footer-grid,
-    .enquiry-form__grid {
+    .enquiry-form__grid,
+    .enquiry-children-ages__grid {
         grid-template-columns: 1fr;
     }
 

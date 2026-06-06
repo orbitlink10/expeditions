@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchFeedback = document.querySelector('[data-search-feedback]');
     const revealItems = document.querySelectorAll('[data-reveal]');
     const enquiryForm = document.querySelector('[data-enquiry-form]');
+    const childrenCountInput = document.querySelector('[data-children-count]');
+    const childrenAges = document.querySelector('[data-children-ages]');
+    const childrenAgeFields = document.querySelector('[data-children-age-fields]');
 
     const syncHeader = () => {
         if (!header) {
@@ -309,6 +312,37 @@ document.addEventListener('DOMContentLoaded', () => {
         revealItems.forEach((item) => observer.observe(item));
     }
 
+    if (childrenCountInput && childrenAges && childrenAgeFields) {
+        const syncChildrenAgeFields = () => {
+            const childCount = Math.min(Math.max(Number.parseInt(childrenCountInput.value, 10) || 0, 0), 12);
+            childrenAgeFields.innerHTML = '';
+            childrenAges.hidden = childCount === 0;
+
+            for (let index = 1; index <= childCount; index += 1) {
+                const label = document.createElement('label');
+                label.className = 'enquiry-field';
+
+                const caption = document.createElement('span');
+                caption.textContent = `Child ${index}`;
+
+                const input = document.createElement('input');
+                input.name = `child_age_${index}`;
+                input.type = 'number';
+                input.inputMode = 'numeric';
+                input.min = '0';
+                input.max = '17';
+                input.placeholder = 'Age';
+                input.required = true;
+
+                label.append(caption, input);
+                childrenAgeFields.append(label);
+            }
+        };
+
+        childrenCountInput.addEventListener('input', syncChildrenAgeFields);
+        syncChildrenAgeFields();
+    }
+
     if (enquiryForm) {
         enquiryForm.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -320,6 +354,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(enquiryForm);
             const recipient = enquiryForm.dataset.enquiryEmail;
             const subject = 'Caracal Expeditions safari enquiry';
+            const childCount = Number.parseInt(formData.get('children'), 10) || 0;
+            const childAges = Array.from({ length: childCount }, (_, index) => {
+                const childNumber = index + 1;
+
+                return `Child ${childNumber}: ${formData.get(`child_age_${childNumber}`) || ''}`;
+            });
             const lines = [
                 'New safari enquiry',
                 '',
@@ -329,6 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Contact preference: ${formData.get('contact_preference') || ''}`,
                 `Number of adults: ${formData.get('adults') || ''}`,
                 `Number of children: ${formData.get('children') || ''}`,
+                ...(childAges.length > 0 ? ['Ages of children:', ...childAges] : []),
                 `Arrival date: ${formData.get('arrival_date') || ''}`,
                 `Departure date: ${formData.get('departure_date') || ''}`,
                 '',
