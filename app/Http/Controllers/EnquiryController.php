@@ -15,7 +15,7 @@ class EnquiryController extends Controller
                 'name' => 'Caracal',
                 'subtitle' => 'Expeditions',
                 'full_name' => 'Caracal Expeditions',
-                'logo_url' => asset('images/caracal-expeditions-profile.svg'),
+                'logo_url' => asset('images/caracal-expeditions-profile.jpg'),
             ],
             'companyEmail' => 'info@caracalexpeditions.co.ke',
             'companyPhone' => '+254701942724',
