@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+    <title id="title">Caracal Expeditions</title>
+    <desc id="desc">Caracal Expeditions profile logo with caracal head mark and Born to Explore tagline.</desc>
+    <rect width="920" height="360" fill="#ffffff"/>
+    <g fill="none" stroke="#9a6a3d" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M238 292c-45 22-104 18-145-15c-39-31-54-83-37-129c16-43 58-73 106-73c27 0 54 10 75 29" stroke-width="12"/>
+        <path d="M73 228c-19-32-35-77-47-135c43 23 74 51 93 86" stroke-width="10"/>
+        <path d="M185 79c13-38 35-63 66-75c-15 40-22 77-20 110" stroke-width="10"/>
+        <path d="M106 162c31-17 63-18 95-4" stroke-width="9"/>
+        <path d="M120 198c28 18 62 22 101 12" stroke-width="8"/>
+        <path d="M102 238c34 26 78 30 130 13" stroke-width="7"/>
+        <path d="M247 146c18 23 25 49 21 80" stroke-width="8"/>
+        <path d="M226 228c19 0 36-8 50-23" stroke-width="7"/>
+        <path d="M94 76c-24-31-52-53-84-67c35 7 68 24 99 52" stroke-width="6"/>
+        <path d="M148 296c-3 20-2 39 5 58" stroke-width="8"/>
+        <path d="M180 297c5 18 15 34 30 48" stroke-width="7"/>
+    </g>
+    <g>
+        <path d="M157 146c21-19 47-19 71 0c-25 5-47 12-68 22c-8-7-9-14-3-22Z" fill="#231f20"/>
+        <circle cx="192" cy="150" r="12" fill="#ffffff"/>
+        <circle cx="197" cy="148" r="6" fill="#231f20"/>
+        <path d="M246 206c18 7 28 19 30 35c-18-1-32-8-43-21c-4-6 4-17 13-14Z" fill="#9a6a3d"/>
+        <path d="M251 221c8 2 14 6 18 11" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g fill="#231f20">
+        <text x="350" y="141" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-weight="500">Caracal</text>
+        <text x="350" y="236" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="500">Expeditions</text>
+    </g>
+    <g fill="#9a6a3d">
+        <text x="350" y="304" font-family="'Brush Script MT', 'Segoe Script', cursive" font-size="50" font-style="italic">Born to Explore</text>
+        <circle cx="660" cy="293" r="5"/>
+        <circle cx="679" cy="286" r="4"/>
+        <circle cx="694" cy="301" r="4"/>
+        <circle cx="713" cy="292" r="5"/>
+    </g>
+</svg>

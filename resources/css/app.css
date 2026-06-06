@@ -952,6 +952,29 @@ body.menu-open .menu-drawer {
     color: var(--ink);
 }
 
+.enquiry-brand .brand-logo-wrap {
+    width: min(18rem, 100%);
+    height: auto;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.enquiry-brand .brand-logo {
+    width: 100%;
+    height: auto;
+}
+
+.enquiry-brand .brand-copy {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
 .enquiry-brand .brand-copy__subtitle {
     color: var(--ink-soft);
 }
