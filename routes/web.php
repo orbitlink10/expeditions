@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\DashboardAuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomepageContentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/enquire', EnquiryController::class)->name('enquire');
 Route::get('/login', [DashboardAuthController::class, 'create'])->name('login');
 Route::post('/login', [DashboardAuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [DashboardAuthController::class, 'destroy'])->name('logout');

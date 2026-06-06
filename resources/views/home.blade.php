@@ -51,7 +51,7 @@
                 <p class="menu-drawer__kicker">{{ $menuDrawer['kicker'] }}</p>
                 <h2>{{ $menuDrawer['title'] }}</h2>
                 <p>{{ $menuDrawer['body'] }}</p>
-                <a class="button button--accent" href="mailto:journeys@caracalexpeditions.com?subject=Caracal%20Expeditions%20Enquiry">{{ $menuDrawer['buttonLabel'] }}</a>
+                <a class="button button--accent" href="{{ route('enquire') }}">{{ $menuDrawer['buttonLabel'] }}</a>
             </div>
         </aside>
 
@@ -69,7 +69,7 @@
                     <p class="hero__subtitle">{{ $hero['subtitle'] }}</p>
 
                     <div class="hero__actions">
-                        <a class="button button--accent" href="#enquire">{{ $hero['buttons']['primary'] }}</a>
+                        <a class="button button--accent" href="{{ route('enquire') }}">{{ $hero['buttons']['primary'] }}</a>
                         <a class="button button--ghost" href="#journeys">{{ $hero['buttons']['secondary'] }}</a>
                     </div>
 
@@ -133,7 +133,7 @@
                                 <p class="card-kicker">{{ $destination['region'] }}</p>
                                 <h3>{{ $destination['title'] }}</h3>
                                 <p>{{ $destination['summary'] }}</p>
-                                <a href="#enquire">{{ $destination['cta'] }}</a>
+                                <a href="{{ route('enquire') }}">{{ $destination['cta'] }}</a>
                             </div>
                         </article>
                     @endforeach
@@ -161,7 +161,7 @@
                                 <p class="offer-meta"><strong>From:</strong> {{ $journey['meta'] }} <span>|</span> <strong>Duration:</strong> {{ $journey['duration'] }}</p>
                                 <h3>{{ $journey['title'] }}</h3>
                                 <p>{{ $journey['summary'] }}</p>
-                                <a class="ghost-button" href="#enquire">{{ $journey['cta'] }}</a>
+                                <a class="ghost-button" href="{{ route('enquire') }}">{{ $journey['cta'] }}</a>
                             </div>
                         </article>
                     @endforeach
@@ -185,7 +185,7 @@
                                 <p class="card-kicker">{{ $experience['region'] }}</p>
                                 <h3>{{ $experience['title'] }}</h3>
                                 <p>{{ $experience['summary'] }}</p>
-                                <a class="ghost-button" href="#enquire">{{ $experience['cta'] }}</a>
+                                <a class="ghost-button" href="{{ route('enquire') }}">{{ $experience['cta'] }}</a>
                             </div>
                         </article>
                     @endforeach
@@ -197,7 +197,7 @@
                     <p class="section-kicker">{{ $tailorBand['kicker'] }}</p>
                     <h2>{{ $tailorBand['title'] }}</h2>
                     <p>{{ $tailorBand['body'] }}</p>
-                    <a class="button button--accent" href="mailto:journeys@caracalexpeditions.com?subject=Caracal%20Expeditions%20Enquiry">{{ $tailorBand['buttonLabel'] }}</a>
+                    <a class="button button--accent" href="{{ route('enquire') }}">{{ $tailorBand['buttonLabel'] }}</a>
                 </div>
             </section>
 

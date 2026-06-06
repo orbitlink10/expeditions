@@ -27,7 +27,7 @@ class HomepageContentManager
                 ['label' => 'Journeys', 'href' => '#journeys'],
                 ['label' => 'Experiences', 'href' => '#experiences'],
                 ['label' => 'FAQ', 'href' => '#faq'],
-                ['label' => 'Enquire', 'href' => '#enquire'],
+                ['label' => 'Enquire', 'href' => route('enquire')],
                 ['label' => 'Dashboard', 'href' => route('login')],
             ],
             'menuDrawer' => $content['menuDrawer'],
@@ -74,7 +74,7 @@ class HomepageContentManager
                     'items' => [
                         ['label' => 'Visa & Entry', 'href' => '#faq'],
                         ['label' => 'Packing Advice', 'href' => '#faq'],
-                        ['label' => 'Enquiry Form', 'href' => '#enquire'],
+                        ['label' => 'Enquiry Form', 'href' => route('enquire')],
                     ],
                 ],
             ],

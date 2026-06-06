@@ -1,0 +1,103 @@
+@extends('layouts.app')
+
+@section('content')
+    <main class="enquiry-page">
+        <section class="enquiry-shell">
+            <aside class="enquiry-sidebar" aria-label="Company contact details">
+                @include('partials.brand', [
+                    'class' => 'enquiry-brand',
+                    'href' => route('home'),
+                    'ariaLabel' => $brand['full_name'].' home',
+                    'logoUrl' => $brand['logo_url'],
+                    'title' => $brand['name'],
+                    'subtitle' => $brand['subtitle'],
+                ])
+
+                <div class="enquiry-contact-list">
+                    <a href="tel:{{ $companyPhone }}">
+                        <span aria-hidden="true">P</span>
+                        {{ $companyPhoneLabel }}
+                    </a>
+                    <a href="mailto:{{ $companyEmail }}">
+                        <span aria-hidden="true">E</span>
+                        {{ $companyEmail }}
+                    </a>
+                    <a href="{{ route('home') }}">
+                        <span aria-hidden="true">W</span>
+                        caracalexpeditions.co.ke
+                    </a>
+                </div>
+            </aside>
+
+            <section class="enquiry-panel" aria-labelledby="enquiry-title">
+                <a class="enquiry-back" href="{{ route('home') }}">Back to home</a>
+                <p class="section-kicker">Safari planning desk</p>
+                <h1 id="enquiry-title">Enquire about this trip</h1>
+
+                <form class="enquiry-form" data-enquiry-form data-enquiry-email="{{ $companyEmail }}">
+                    <label class="enquiry-field">
+                        <span>Name *</span>
+                        <input name="name" type="text" autocomplete="name" required>
+                    </label>
+
+                    <label class="enquiry-field">
+                        <span>Email *</span>
+                        <input name="email" type="email" autocomplete="email" required>
+                    </label>
+
+                    <label class="enquiry-field">
+                        <span>Telephone *</span>
+                        <input name="telephone" type="tel" autocomplete="tel" required>
+                    </label>
+
+                    <fieldset class="enquiry-preference">
+                        <legend>Contact Preference</legend>
+                        <label>
+                            <input type="radio" name="contact_preference" value="Email" checked>
+                            <span>Email</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="contact_preference" value="Phone">
+                            <span>Phone</span>
+                        </label>
+                    </fieldset>
+
+                    <div class="enquiry-form__grid">
+                        <label class="enquiry-field">
+                            <span>Number of adults</span>
+                            <input name="adults" type="number" inputmode="numeric" min="1">
+                        </label>
+
+                        <label class="enquiry-field">
+                            <span>Number of children</span>
+                            <input name="children" type="number" inputmode="numeric" min="0">
+                        </label>
+
+                        <label class="enquiry-field">
+                            <span>Arrival date</span>
+                            <input name="arrival_date" type="date">
+                        </label>
+
+                        <label class="enquiry-field">
+                            <span>Departure date</span>
+                            <input name="departure_date" type="date">
+                        </label>
+                    </div>
+
+                    <label class="enquiry-field">
+                        <span>Message</span>
+                        <textarea name="message" rows="5"></textarea>
+                    </label>
+
+                    <div class="enquiry-actions">
+                        <button class="button button--accent" type="submit">Send enquiry</button>
+                        <a class="button enquiry-button--light" href="mailto:{{ $companyEmail }}?subject=Caracal%20Expeditions%20Enquiry">Email company directly</a>
+                        <a class="button enquiry-button--light" href="tel:{{ $companyPhone }}">Call company</a>
+                    </div>
+
+                    <p class="enquiry-note" data-enquiry-note>Your enquiry will open in your email app addressed to Caracal Expeditions.</p>
+                </form>
+            </section>
+        </section>
+    </main>
+@endsection

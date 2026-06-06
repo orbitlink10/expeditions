@@ -44,7 +44,7 @@
 
                     <div class="dashboard-sidebar__actions">
                         <a class="dashboard-chip" href="{{ route('home') }}">Public website</a>
-                        <a class="button button--accent" href="mailto:journeys@caracalexpeditions.com?subject=Operations%20Dashboard%20Follow-up">Alert concierge</a>
+                        <a class="button button--accent" href="mailto:info@caracalexpeditions.co.ke?subject=Operations%20Dashboard%20Follow-up">Alert concierge</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button class="dashboard-chip dashboard-chip--button" type="submit">Sign out</button>

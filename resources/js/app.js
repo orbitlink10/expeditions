@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchCards = Array.from(document.querySelectorAll('[data-search-card]'));
     const searchFeedback = document.querySelector('[data-search-feedback]');
     const revealItems = document.querySelectorAll('[data-reveal]');
+    const enquiryForm = document.querySelector('[data-enquiry-form]');
 
     const syncHeader = () => {
         if (!header) {
@@ -306,6 +307,37 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         revealItems.forEach((item) => observer.observe(item));
+    }
+
+    if (enquiryForm) {
+        enquiryForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            if (!enquiryForm.reportValidity()) {
+                return;
+            }
+
+            const formData = new FormData(enquiryForm);
+            const recipient = enquiryForm.dataset.enquiryEmail;
+            const subject = 'Caracal Expeditions safari enquiry';
+            const lines = [
+                'New safari enquiry',
+                '',
+                `Name: ${formData.get('name') || ''}`,
+                `Email: ${formData.get('email') || ''}`,
+                `Telephone: ${formData.get('telephone') || ''}`,
+                `Contact preference: ${formData.get('contact_preference') || ''}`,
+                `Number of adults: ${formData.get('adults') || ''}`,
+                `Number of children: ${formData.get('children') || ''}`,
+                `Arrival date: ${formData.get('arrival_date') || ''}`,
+                `Departure date: ${formData.get('departure_date') || ''}`,
+                '',
+                'Message:',
+                formData.get('message') || '',
+            ];
+
+            window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+        });
     }
 
     syncHeader();
