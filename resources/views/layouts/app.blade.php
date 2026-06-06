@@ -79,7 +79,7 @@
         @yield('content')
 
         <!-- WhatsApp Floating Button -->
-        <a href="https://wa.me/254746761556" class="whatsapp-button" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp">
+        <a href="https://wa.me/254701942724" class="whatsapp-button" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp">
             <img src="{{ asset('images/whatsapp-logo.jpg') }}" alt="" aria-hidden="true">
         </a>
     </body>
