@@ -104,6 +104,23 @@
 
                     <p class="enquiry-note" data-enquiry-note>Your enquiry will open in your email app addressed to Caracal Expeditions.</p>
                 </form>
+
+                <section class="enquiry-terms" aria-labelledby="enquiry-terms-title">
+                    <div class="enquiry-terms__banner">
+                        <h2 id="enquiry-terms-title">Terms and Conditions</h2>
+                    </div>
+
+                    <div class="enquiry-terms__body">
+                        <h3>Itinerary Terms and Conditions</h3>
+                        <p>Please note</p>
+                        <ul>
+                            <li>This is just a quote</li>
+                            <li>No booking has been done</li>
+                            <li>Room rates are subject to change and availability at the time of confirmation</li>
+                            <li>Booking can only be done once the client has made payment.</li>
+                        </ul>
+                    </div>
+                </section>
             </section>
         </section>
     </main>
