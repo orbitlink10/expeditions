@@ -1031,6 +1031,24 @@ body.menu-open .menu-drawer {
     gap: 1.35rem;
 }
 
+.enquiry-alert {
+    margin: 0 0 1.25rem;
+    padding: .95rem 1rem;
+    border-radius: .75rem;
+    font-size: .95rem;
+    line-height: 1.6;
+}
+
+.enquiry-alert--success {
+    background: rgba(94, 162, 118, .18);
+    color: #2f6e48;
+}
+
+.enquiry-alert--error {
+    background: rgba(219, 101, 72, .18);
+    color: var(--terracotta-deep);
+}
+
 .enquiry-form__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

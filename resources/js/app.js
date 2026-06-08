@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchCards = Array.from(document.querySelectorAll('[data-search-card]'));
     const searchFeedback = document.querySelector('[data-search-feedback]');
     const revealItems = document.querySelectorAll('[data-reveal]');
-    const enquiryForm = document.querySelector('[data-enquiry-form]');
     const childrenCountInput = document.querySelector('[data-children-count]');
     const childrenAges = document.querySelector('[data-children-ages]');
     const childrenAgeFields = document.querySelector('[data-children-age-fields]');
@@ -341,44 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         childrenCountInput.addEventListener('input', syncChildrenAgeFields);
         syncChildrenAgeFields();
-    }
-
-    if (enquiryForm) {
-        enquiryForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            if (!enquiryForm.reportValidity()) {
-                return;
-            }
-
-            const formData = new FormData(enquiryForm);
-            const recipient = enquiryForm.dataset.enquiryEmail;
-            const subject = 'Caracal Expeditions safari enquiry';
-            const childCount = Number.parseInt(formData.get('children'), 10) || 0;
-            const childAges = Array.from({ length: childCount }, (_, index) => {
-                const childNumber = index + 1;
-
-                return `Child ${childNumber}: ${formData.get(`child_age_${childNumber}`) || ''}`;
-            });
-            const lines = [
-                'New safari enquiry',
-                '',
-                `Name: ${formData.get('name') || ''}`,
-                `Email: ${formData.get('email') || ''}`,
-                `Telephone: ${formData.get('telephone') || ''}`,
-                `Contact preference: ${formData.get('contact_preference') || ''}`,
-                `Number of adults: ${formData.get('adults') || ''}`,
-                `Number of children: ${formData.get('children') || ''}`,
-                ...(childAges.length > 0 ? ['Ages of children:', ...childAges] : []),
-                `Arrival date: ${formData.get('arrival_date') || ''}`,
-                `Departure date: ${formData.get('departure_date') || ''}`,
-                '',
-                'Message:',
-                formData.get('message') || '',
-            ];
-
-            window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
-        });
     }
 
     syncHeader();

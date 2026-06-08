@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/enquire', EnquiryController::class)->name('enquire');
+Route::post('/enquire', [EnquiryController::class, 'store'])->name('enquire.store');
 Route::get('/login', [DashboardAuthController::class, 'create'])->name('login');
 Route::post('/login', [DashboardAuthController::class, 'store'])->name('login.store');
 Route::post('/logout', [DashboardAuthController::class, 'destroy'])->name('logout');
