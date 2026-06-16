@@ -11,11 +11,11 @@ use Throwable;
 
 class EnquiryController extends Controller
 {
-    private const COMPANY_EMAIL = 'info@caracalexpeditions.co.ke';
-    private const COMPANY_PHONE = '+254701942724';
-
     public function __invoke(): View
     {
+        $companyEmail = config('company.email');
+        $companyPhone = config('company.phone');
+
         return view('enquire', [
             'title' => 'Enquire | Caracal Expeditions',
             'description' => 'Send a safari enquiry to Caracal Expeditions or call the team directly.',
@@ -25,9 +25,9 @@ class EnquiryController extends Controller
                 'full_name' => 'Caracal Expeditions',
                 'logo_url' => asset('images/caracal-expeditions-profile.jpg'),
             ],
-            'companyEmail' => self::COMPANY_EMAIL,
-            'companyPhone' => self::COMPANY_PHONE,
-            'companyPhoneLabel' => '+254 701 942 724',
+            'companyEmail' => $companyEmail,
+            'companyPhone' => $companyPhone,
+            'companyPhoneLabel' => config('company.phone_label'),
         ]);
     }
 
@@ -61,7 +61,7 @@ class EnquiryController extends Controller
         $validated['child_ages'] = $childAges;
 
         try {
-            Mail::to(self::COMPANY_EMAIL)->send(new EnquirySubmitted($validated));
+            Mail::to(config('company.email'))->send(new EnquirySubmitted($validated));
         } catch (Throwable) {
             return back()
                 ->withInput()

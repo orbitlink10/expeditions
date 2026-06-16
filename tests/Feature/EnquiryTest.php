@@ -10,6 +10,8 @@ class EnquiryTest extends TestCase
 {
     public function test_enquiry_page_has_direct_email_and_call_actions(): void
     {
+        config(['company.email' => 'info@caracalexpeditions.co.ke']);
+
         $this
             ->get(route('enquire'))
             ->assertOk()
@@ -20,6 +22,7 @@ class EnquiryTest extends TestCase
     public function test_enquiry_form_sends_email_to_company(): void
     {
         Mail::fake();
+        config(['company.email' => 'info@caracalexpeditions.co.ke']);
 
         $response = $this->post(route('enquire.store'), [
             'name' => 'Jane Traveller',
