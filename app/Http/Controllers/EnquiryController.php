@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\EnquirySubmitted;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Throwable;
@@ -26,6 +27,7 @@ class EnquiryController extends Controller
                 'logo_url' => asset('images/caracal-expeditions-profile.jpg'),
             ],
             'companyEmail' => $companyEmail,
+            'companyDirectEmailUrl' => config('company.direct_email_url'),
             'companyPhone' => $companyPhone,
             'companyPhoneLabel' => config('company.phone_label'),
         ]);
@@ -62,7 +64,12 @@ class EnquiryController extends Controller
 
         try {
             Mail::to(config('company.email'))->send(new EnquirySubmitted($validated));
-        } catch (Throwable) {
+        } catch (Throwable $exception) {
+            Log::error('Enquiry email failed to send.', [
+                'recipient' => config('company.email'),
+                'exception' => $exception,
+            ]);
+
             return back()
                 ->withInput()
                 ->with('enquiry_error', 'Sorry, your enquiry could not be sent right now. Please email or call us directly.');

@@ -113,7 +113,7 @@
 
                 <div class="enquiry-actions">
                     <button class="button button--accent" type="submit" form="enquiry-form">Send enquiry</button>
-                    <a class="button enquiry-button--light" href="mailto:{{ $companyEmail }}?subject=Caracal%20Expeditions%20Enquiry">Email company directly</a>
+                    <a class="button enquiry-button--light" href="{{ $companyDirectEmailUrl }}" target="_blank" rel="noopener">Email company directly</a>
                     <a class="button enquiry-button--light" href="tel:{{ $companyPhone }}">Call company</a>
                 </div>
 

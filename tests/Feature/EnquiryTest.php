@@ -16,7 +16,7 @@ class EnquiryTest extends TestCase
             ->get(route('enquire'))
             ->assertOk()
             ->assertSee('form="enquiry-form"', false)
-            ->assertSee('mailto:info@caracalexpeditions.co.ke?subject=Caracal%20Expeditions%20Enquiry', false)
+            ->assertSee('https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=info%40caracalexpeditions.co.ke&amp;su=Caracal%20Expeditions%20Enquiry', false)
             ->assertSee('tel:+254701942724', false);
     }
 
