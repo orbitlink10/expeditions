@@ -46,7 +46,7 @@
                     <p class="enquiry-alert enquiry-alert--error">Please check the highlighted details and try again.</p>
                 @endif
 
-                <form class="enquiry-form" method="POST" action="{{ route('enquire.store') }}" data-enquiry-form>
+                <form id="enquiry-form" class="enquiry-form" method="POST" action="{{ route('enquire.store') }}" data-enquiry-form>
                     @csrf
                     <label class="enquiry-field">
                         <span>Name *</span>
@@ -109,14 +109,15 @@
                         <textarea name="message" rows="5">{{ old('message') }}</textarea>
                     </label>
 
-                    <div class="enquiry-actions">
-                        <button class="button button--accent" type="submit">Send enquiry</button>
-                        <a class="button enquiry-button--light" href="mailto:{{ $companyEmail }}?subject=Caracal%20Expeditions%20Enquiry">Email company directly</a>
-                        <a class="button enquiry-button--light" href="tel:{{ $companyPhone }}">Call company</a>
-                    </div>
-
-                    <p class="enquiry-note" data-enquiry-note>Send the form to Caracal Expeditions, email us directly, or call the planning desk.</p>
                 </form>
+
+                <div class="enquiry-actions">
+                    <button class="button button--accent" type="submit" form="enquiry-form">Send enquiry</button>
+                    <a class="button enquiry-button--light" href="mailto:{{ $companyEmail }}?subject=Caracal%20Expeditions%20Enquiry">Email company directly</a>
+                    <a class="button enquiry-button--light" href="tel:{{ $companyPhone }}">Call company</a>
+                </div>
+
+                <p class="enquiry-note" data-enquiry-note>Send the form to Caracal Expeditions, email us directly, or call the planning desk.</p>
 
                 <section class="enquiry-terms" aria-labelledby="enquiry-terms-title">
                     <div class="enquiry-terms__banner">
