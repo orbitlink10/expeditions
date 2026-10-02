@@ -22,6 +22,7 @@
                 </div>
 
                 <nav class="dashboard-nav" aria-label="Dashboard sections">
+                    <p class="dashboard-nav__heading">Operations management</p>
                     @foreach ($navLinks as $link)
                         <a
                             class="dashboard-nav__link{{ $loop->first ? ' is-active' : '' }}"
@@ -83,30 +84,19 @@
                     <section class="dashboard-hero" id="overview" data-reveal data-dashboard-section>
                         <div class="container dashboard-hero__grid">
                             <div class="dashboard-hero__copy">
-                                <p class="dashboard-eyebrow">{{ $hero['eyebrow'] }}</p>
-                                <h1>{{ $hero['title'] }}</h1>
+                                <p class="dashboard-eyebrow">Admin overview</p>
+                                <h1>Dashboard</h1>
                                 <p>{{ $hero['subtitle'] }}</p>
-
+                            </div>
+                            <div class="dashboard-overview-tools">
                                 <div class="dashboard-hero__actions">
                                     <a class="button button--accent" href="#departures">Open departure board</a>
                                     <a class="dashboard-button-secondary" href="{{ route('dashboard.homepage.edit') }}">Edit homepage content</a>
                                 </div>
+                                <nav class="dashboard-breadcrumb" aria-label="Breadcrumb">
+                                    <a href="{{ route('home') }}">Home</a><span aria-hidden="true">/</span><span aria-current="page">Dashboard</span>
+                                </nav>
                             </div>
-
-                            <aside class="dashboard-spotlight" style="--spotlight-image: url('{{ asset($hero['image']) }}');">
-                                <p class="dashboard-panel__eyebrow">{{ $hero['spotlight']['eyebrow'] }}</p>
-                                <h2>{{ $hero['spotlight']['title'] }}</h2>
-                                <p>{{ $hero['spotlight']['body'] }}</p>
-
-                                <div class="dashboard-spotlight__stats">
-                                    @foreach ($hero['spotlight']['stats'] as $stat)
-                                        <div class="dashboard-spotlight__stat">
-                                            <span>{{ $stat['label'] }}</span>
-                                            <strong>{{ $stat['value'] }}</strong>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </aside>
                         </div>
                     </section>
 
@@ -114,6 +104,7 @@
                         <div class="container dashboard-summary__grid">
                             @foreach ($summaryMetrics as $metric)
                                 <article class="dashboard-metric">
+                                    <span class="dashboard-metric__icon" aria-hidden="true">{{ ['AG', 'OP', 'DR', 'GS'][$loop->index] }}</span>
                                     <p class="dashboard-panel__eyebrow">{{ $metric['label'] }}</p>
                                     <strong>{{ $metric['value'] }}</strong>
                                     <span class="dashboard-metric__delta dashboard-metric__delta--{{ $metric['tone'] }}">{{ $metric['delta'] }}</span>
@@ -125,6 +116,21 @@
 
                     <section class="dashboard-grid-section" data-reveal>
                         <div class="container dashboard-grid">
+                            <article class="dashboard-panel dashboard-panel--signal">
+                                <div>
+                                    <p class="dashboard-panel__eyebrow">{{ $hero['spotlight']['eyebrow'] }}</p>
+                                    <h2>{{ $hero['spotlight']['title'] }}</h2>
+                                    <p>{{ $hero['spotlight']['body'] }}</p>
+                                </div>
+                                <div class="dashboard-spotlight__stats">
+                                    @foreach ($hero['spotlight']['stats'] as $stat)
+                                        <div class="dashboard-spotlight__stat">
+                                            <span>{{ $stat['label'] }}</span>
+                                            <strong>{{ $stat['value'] }}</strong>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </article>
                             <article class="dashboard-panel dashboard-panel--wide" id="departures" data-dashboard-section>
                                 <div class="dashboard-panel__head">
                                     <div>

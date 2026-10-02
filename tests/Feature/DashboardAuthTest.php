@@ -52,7 +52,7 @@ class DashboardAuthTest extends TestCase
             'password' => config('dashboard.password'),
         ])
             ->assertOk()
-            ->assertSeeText('Keep every safari in motion.')
+            ->assertSeeText('Admin overview')
             ->assertSee("Today's safari movement", false);
     }
 
