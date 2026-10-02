@@ -1,4 +1,24 @@
 /* Dashboard theme, scoped to keep the public website's safari palette. */
+.dashboard-management h1 { font-size: 2.5rem; letter-spacing: -.04em; }
+.management-description { color: #72829b; line-height: 1.7; font-size: .9rem; }
+.settings-form { display: grid; gap: 1.25rem; max-width: 52rem; }
+.settings-form h2 { margin: .5rem 0; font-size: 1.2rem; }
+.settings-form label { display: grid; gap: .5rem; color: #465974; font-size: .9rem; font-weight: 600; }
+.settings-form small { color: #72829b; font-weight: 400; }
+.settings-form input, .dashboard-management select { width: 100%; min-width: 0; padding: .8rem 1rem; font: inherit; border: 1px solid #d6e0ee; border-radius: .75rem; color: #172033; background: #f8fafd; }
+.settings-form .button { justify-self: start; }
+.enquiries-filter, .enquiry-record__actions, .enquiry-record__actions form, .enquiries-pagination { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; }
+.enquiries-filter { margin: 1.5rem 0; }
+.enquiries-filter select, .enquiry-record__actions select { width: auto; }
+.enquiries-list { display: grid; gap: 1.25rem; }
+.enquiry-record__details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin: 1.5rem 0; }
+.enquiry-record__details span, .enquiry-record__message > span { color: #72829b; font-size: .75rem; display: block; margin-bottom: .35rem; }
+.enquiry-record__details p { margin: 0; font-size: .9rem; }
+.enquiry-record__details a { color: #1755a0; overflow-wrap: anywhere; }
+.enquiry-record__message { border-top: 1px solid #e3e9f2; padding-top: 1rem; }
+.enquiry-record__message p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; font-size: .9rem; }
+.enquiries-pagination { margin-top: 1.5rem; color: #72829b; }
+@media (max-width: 42rem) { .enquiry-record__details { grid-template-columns: 1fr; } }
 .dashboard-page.dashboard-page {
     --font-heading: 'Manrope', 'Segoe UI', sans-serif;
     color: #172033;

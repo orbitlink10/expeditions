@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\EnquirySubmitted;
+use App\Models\Enquiry;
+use App\Support\EnquiryNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
-use Throwable;
 
 class EnquiryController extends Controller
 {
@@ -33,7 +31,7 @@ class EnquiryController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, EnquiryNotifier $notifier): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
@@ -61,19 +59,9 @@ class EnquiryController extends Controller
         }
 
         $validated['child_ages'] = $childAges;
-
-        try {
-            Mail::to(config('company.email'))->send(new EnquirySubmitted($validated));
-        } catch (Throwable $exception) {
-            Log::error('Enquiry email failed to send.', [
-                'recipient' => config('company.email'),
-                'exception' => $exception,
-            ]);
-
-            return back()
-                ->withInput()
-                ->with('enquiry_error', 'Sorry, your enquiry could not be sent right now. Please email or call us directly.');
-        }
+        $validated['children'] = $childCount;
+        $enquiry = Enquiry::create($validated);
+        $notifier->send($enquiry);
 
         return back()->with('enquiry_status', 'Thank you. Your enquiry has been sent to Caracal Expeditions.');
     }

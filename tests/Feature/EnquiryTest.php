@@ -8,6 +8,7 @@ use Tests\TestCase;
 
 class EnquiryTest extends TestCase
 {
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
     public function test_enquiry_page_has_direct_email_and_call_actions(): void
     {
         config(['company.email' => 'info@caracalexpeditions.co.ke']);
@@ -47,5 +48,6 @@ class EnquiryTest extends TestCase
                 && $mail->enquiry['name'] === 'Jane Traveller'
                 && $mail->enquiry['child_ages'] === [8];
         });
+        $this->assertDatabaseHas('enquiries', ['email' => 'jane@example.com', 'notification_status' => 'sent']);
     }
 }

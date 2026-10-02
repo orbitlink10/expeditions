@@ -21,6 +21,8 @@ class DashboardController extends Controller
                 ['label' => 'Regions', 'href' => '#regions', 'code' => 'RG'],
                 ['label' => 'Concierge', 'href' => '#concierge', 'code' => 'CQ'],
                 ['label' => 'Homepage Content', 'href' => route('dashboard.homepage.edit'), 'code' => 'HC'],
+                ['label' => 'Enquiries', 'href' => route('dashboard.enquiries.index'), 'code' => 'EQ'],
+                ['label' => 'Settings', 'href' => route('dashboard.settings.edit'), 'code' => 'ST'],
             ],
             'hero' => [
                 'eyebrow' => 'Safari operations dashboard',
