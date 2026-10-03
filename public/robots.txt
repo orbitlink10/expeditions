@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /enquire
+
+Sitemap: https://caracalexpeditions.co.ke/sitemap.xml

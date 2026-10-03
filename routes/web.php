@@ -5,9 +5,17 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomepageContentController;
+use App\Http\Controllers\SeoPageController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+
+foreach (array_keys(app(\App\Support\SeoPageRegistry::class)->pages()) as $seoPath) {
+    Route::get('/'.$seoPath.'/', SeoPageController::class)
+        ->name('seo.'.str_replace('/', '.', $seoPath));
+}
 Route::get('/enquire', EnquiryController::class)->name('enquire');
 Route::post('/enquire', [EnquiryController::class, 'store'])->name('enquire.store');
 Route::get('/login', [DashboardAuthController::class, 'create'])->name('login');

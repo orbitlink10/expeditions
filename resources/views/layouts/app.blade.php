@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ $htmlLang ?? 'en' }}">
     <head>
         @php
             $viteManifestPath = public_path('build/manifest.json');
@@ -9,11 +9,45 @@
             $compiledJsFile = $compiledJsFiles[0] ?? null;
             $fallbackCssPath = public_path('fallback/app.css');
             $fallbackJsPath = public_path('fallback/app.js');
+            $seoTitle = $title ?? config('app.name');
+            $seoDescription = $description ?? 'Caracal Expeditions crafts private Kenya safaris with elegant camps and seamless logistics.';
+            $seoCanonical = $canonical ?? null;
+            $seoAlternates = $alternates ?? [];
+            $seoOgImage = $ogImage ?? null;
+            $seoOgType = $ogType ?? 'website';
+            $seoRobots = $robots ?? null;
         @endphp
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ $title ?? config('app.name') }}</title>
-        <meta name="description" content="{{ $description ?? 'Caracal Expeditions crafts private Kenya safaris with elegant camps and seamless logistics.' }}">
+        <title>{{ $seoTitle }}</title>
+        <meta name="description" content="{{ $seoDescription }}">
+        @if ($seoCanonical)
+            <link rel="canonical" href="{{ $seoCanonical }}">
+        @endif
+        @foreach ($seoAlternates as $alternate)
+            <link rel="alternate" hreflang="{{ $alternate['hreflang'] }}" href="{{ $alternate['url'] }}">
+        @endforeach
+        @if ($seoRobots)
+            <meta name="robots" content="{{ $seoRobots }}">
+        @endif
+        <meta property="og:site_name" content="{{ config('seo.site.name', config('app.name')) }}">
+        <meta property="og:title" content="{{ $seoTitle }}">
+        <meta property="og:description" content="{{ $seoDescription }}">
+        <meta property="og:type" content="{{ $seoOgType }}">
+        @if ($seoCanonical)
+            <meta property="og:url" content="{{ $seoCanonical }}">
+        @endif
+        @if ($seoOgImage)
+            <meta property="og:image" content="{{ $seoOgImage }}">
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:image" content="{{ $seoOgImage }}">
+        @else
+            <meta name="twitter:card" content="summary">
+        @endif
+        <meta name="twitter:title" content="{{ $seoTitle }}">
+        <meta name="twitter:description" content="{{ $seoDescription }}">
+        @include('seo.partials.organization-schema')
+        @stack('head')
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">

@@ -9,6 +9,12 @@ class HomeController extends Controller
 {
     public function __invoke(HomepageContentManager $homepageContentManager): View
     {
-        return view('home', $homepageContentManager->getHomeViewData());
+        $data = $homepageContentManager->getHomeViewData();
+
+        $data['canonical'] = url('/').'/';
+        $data['ogType'] = 'website';
+        $data['ogImage'] = asset($data['hero']['image'] ?? config('seo.site.default_image'));
+
+        return view('home', $data);
     }
 }
