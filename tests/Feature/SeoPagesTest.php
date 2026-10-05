@@ -164,6 +164,50 @@ class SeoPagesTest extends TestCase
             ->assertSee('href="https://caracalexpeditions.co.ke/destinations/"', false);
     }
 
+    public function test_dashboard_edits_override_the_public_page_and_can_be_reset(): void
+    {
+        $session = ['dashboard_authenticated' => true];
+
+        $this->withSession($session)
+            ->put('/dashboard/pages/edit?path=luxury-kenya-safaris', [
+                'title' => 'Edited Luxury Safari Title',
+                'description' => 'Edited description used only in the test.',
+                'h1' => 'Edited Luxury Safari Heading',
+                'eyebrow' => 'Edited eyebrow',
+                'subtitle' => 'Edited subtitle text.',
+                'hero_image' => 'images/mara-sunset.jpg',
+                'hero_alt' => 'Edited alt text',
+            ])
+            ->assertRedirect(route('dashboard.pages.edit', ['path' => 'luxury-kenya-safaris']));
+
+        $this->assertDatabaseHas('seo_page_contents', ['path' => 'luxury-kenya-safaris']);
+
+        $this->get('/luxury-kenya-safaris/')
+            ->assertOk()
+            ->assertSee('<title>Edited Luxury Safari Title</title>', false)
+            ->assertSee('Edited Luxury Safari Heading', false)
+            ->assertSee('hreflang="en-us"', false)
+            ->assertSee('class="seo-section"', false);
+
+        $this->withSession($session)
+            ->post('/dashboard/pages/reset?path=luxury-kenya-safaris')
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('seo_page_contents', ['path' => 'luxury-kenya-safaris']);
+
+        $this->get('/luxury-kenya-safaris/')
+            ->assertOk()
+            ->assertSee('Luxury Kenya Safaris', false)
+            ->assertDontSee('Edited Luxury Safari Heading', false);
+    }
+
+    public function test_page_editor_requires_core_fields(): void
+    {
+        $this->withSession(['dashboard_authenticated' => true])
+            ->put('/dashboard/pages/edit?path=about', [])
+            ->assertSessionHasErrors(['title', 'description', 'h1']);
+    }
+
     public function test_homepage_keeps_its_hero_and_gains_a_self_canonical(): void
     {
         $this->get('/')

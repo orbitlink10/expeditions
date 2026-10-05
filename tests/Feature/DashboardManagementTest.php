@@ -24,6 +24,21 @@ class DashboardManagementTest extends TestCase
         $this->put(route('dashboard.settings.update'), [])->assertRedirect(route('login'));
     }
 
+    public function test_published_pages_dashboard_lists_seo_pages(): void
+    {
+        $this->get(route('dashboard.pages.index'))->assertRedirect(route('login'));
+
+        $this->withSession(['dashboard_authenticated' => true])
+            ->get(route('dashboard.pages.index'))
+            ->assertOk()
+            ->assertSee('Published pages', false)
+            ->assertSee('Luxury Kenya Safaris', false)
+            ->assertSee('https://caracalexpeditions.co.ke/luxury-kenya-safaris/', false)
+            ->assertSee('USA', false)
+            ->assertSee('France', false)
+            ->assertSee('Россия', false);
+    }
+
     public function test_saved_settings_control_notification_recipient_and_public_contact_details(): void
     {
         Mail::fake();

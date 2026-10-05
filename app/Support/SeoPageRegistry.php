@@ -2,12 +2,15 @@
 
 namespace App\Support;
 
+use App\Models\SeoPageContent;
+use Illuminate\Support\Facades\Schema;
+
 class SeoPageRegistry
 {
     /**
-     * Return the raw registry of all SEO pages keyed by path.
+     * Return the config-defined registry of all SEO pages keyed by path.
      */
-    public function pages(): array
+    public function basePages(): array
     {
         return array_merge(
             config('seo.pages', []),
@@ -21,6 +24,70 @@ class SeoPageRegistry
             config('seo-completion', []),
             config('seo-hubs', []),
         );
+    }
+
+    /**
+     * Return the registry with any dashboard-saved overrides applied on top.
+     */
+    public function pages(): array
+    {
+        $pages = $this->basePages();
+
+        foreach ($this->overrides() as $path => $override) {
+            if (isset($pages[$path]) && is_array($override)) {
+                $pages[$path] = array_replace($pages[$path], $override);
+            }
+        }
+
+        return $pages;
+    }
+
+    /**
+     * Dashboard-saved content overrides keyed by path.
+     */
+    public function overrides(): array
+    {
+        $overrides = [];
+
+        try {
+            if (! Schema::hasTable('seo_page_contents')) {
+                return [];
+            }
+
+            foreach (SeoPageContent::query()->get() as $record) {
+                $content = $record->content;
+
+                if (is_string($content)) {
+                    $content = json_decode($content, true);
+                }
+
+                if (is_array($content)) {
+                    $overrides[$record->path] = $content;
+                }
+            }
+        } catch (\Throwable) {
+            return [];
+        }
+
+        return $overrides;
+    }
+
+    public function overrideFor(string $path): ?array
+    {
+        return $this->overrides()[$this->normalize($path)] ?? null;
+    }
+
+    /**
+     * Content keys the dashboard editor is allowed to override.
+     */
+    public function editableKeys(): array
+    {
+        return [
+            'eyebrow', 'h1', 'title', 'description', 'subtitle',
+            'hero_image', 'hero_alt', 'stats', 'facts',
+            'sections', 'itinerary', 'inclusions', 'exclusions',
+            'faqs', 'related',
+        ];
     }
 
     public function site(): array

@@ -21,6 +21,7 @@ class DashboardController extends Controller
                 ['label' => 'Regions', 'href' => '#regions', 'code' => 'RG'],
                 ['label' => 'Concierge', 'href' => '#concierge', 'code' => 'CQ'],
                 ['label' => 'Homepage Content', 'href' => route('dashboard.homepage.edit'), 'code' => 'HC'],
+                ['label' => 'Published Pages', 'href' => route('dashboard.pages.index'), 'code' => 'PG'],
                 ['label' => 'Enquiries', 'href' => route('dashboard.enquiries.index'), 'code' => 'EQ'],
                 ['label' => 'Settings', 'href' => route('dashboard.settings.edit'), 'code' => 'ST'],
             ],

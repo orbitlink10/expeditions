@@ -172,3 +172,21 @@
     .dashboard-page .dashboard-table__row { grid-template-columns: 1fr; }
     .dashboard-page .dashboard-hero__actions { align-items: stretch; flex-direction: column; width: 100%; }
 }
+
+/* Published pages admin */
+.pages-admin__summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.pages-admin__stat { border: 1px solid #e2e7ef; background: #fff; border-radius: 1.25rem; padding: 1.1rem 1.25rem; }
+.pages-admin__stat strong { display: block; color: #172033; font-size: 1.7rem; font-weight: 800; letter-spacing: -.03em; }
+.pages-admin__stat span { color: #72829b; font-size: .8rem; }
+.pages-admin { display: grid; gap: 1.25rem; }
+.pages-admin__grid { display: grid; gap: .6rem; margin-top: 1rem; }
+.pages-admin__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: center; padding: .9rem 1.1rem; border: 1px solid #e3e9f2; border-radius: 1rem; background: #f6f8fc; }
+.pages-admin__item strong { display: block; color: #172033; font-size: .92rem; }
+.pages-admin__item span { color: #72829b; font-size: .78rem; overflow-wrap: anywhere; }
+.pages-admin__meta { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; justify-content: flex-end; }
+.pages-admin__badge { padding: .35rem .65rem; border-radius: 999px; background: #edf3ff; color: #5276aa; font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.pages-admin__badge--edited { background: #e3f5eb; color: #167453; }
+@media (max-width: 42rem) {
+    .pages-admin__item { grid-template-columns: 1fr; }
+    .pages-admin__meta { justify-content: flex-start; }
+}
