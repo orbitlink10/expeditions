@@ -30,9 +30,13 @@ Route::middleware('dashboard.auth')->group(function (): void {
     Route::put('/dashboard/settings', [\App\Http\Controllers\DashboardManagementController::class, 'saveSettings'])->name('dashboard.settings.update');
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/dashboard/pages', [\App\Http\Controllers\DashboardManagementController::class, 'pages'])->name('dashboard.pages.index');
+    Route::get('/dashboard/pages/create', [\App\Http\Controllers\DashboardManagementController::class, 'createPage'])->name('dashboard.pages.create');
+    Route::post('/dashboard/pages', [\App\Http\Controllers\DashboardManagementController::class, 'storePage'])->name('dashboard.pages.store');
     Route::get('/dashboard/pages/edit', [\App\Http\Controllers\DashboardManagementController::class, 'editPage'])->name('dashboard.pages.edit');
     Route::put('/dashboard/pages/edit', [\App\Http\Controllers\DashboardManagementController::class, 'updatePage'])->name('dashboard.pages.update');
     Route::post('/dashboard/pages/reset', [\App\Http\Controllers\DashboardManagementController::class, 'resetPage'])->name('dashboard.pages.reset');
     Route::get('/dashboard/homepage', [HomepageContentController::class, 'edit'])->name('dashboard.homepage.edit');
     Route::post('/dashboard/homepage', [HomepageContentController::class, 'update'])->name('dashboard.homepage.update');
 });
+
+Route::get('/{pagePath}', SeoPageController::class)->where('pagePath', '.*')->name('seo.custom');

@@ -64,10 +64,46 @@ class DashboardManagementController extends Controller
         ]);
     }
 
+    public function createPage(Request $request)
+    {
+        return view('dashboard-pages-create', [
+            ...$this->viewData($request, 'PG'),
+            'title' => 'Create new page | Caracal Expeditions',
+        ]);
+    }
+
+    public function storePage(Request $request, SeoPageRegistry $registry)
+    {
+        $data = $request->validate([
+            'path' => ['required', 'string', 'max:200', 'regex:~^[a-z0-9]+(?:-[a-z0-9]+)*(?:/[a-z0-9]+(?:-[a-z0-9]+)*)*$~',
+                Rule::unique('seo_page_contents', 'path'),
+                function ($attribute, $value, $fail) use ($registry) {
+                    $reserved = ['dashboard', 'login', 'logout', 'enquire', 'sitemap.xml', 'build', 'images', 'storage', 'api', 'up'];
+                    if ($registry->exists($value) || in_array(explode('/', $value)[0], $reserved, true) || is_file(public_path($value)) || is_dir(public_path($value))) {
+                        $fail('This URL is already in use. Choose another page URL.');
+                    }
+                }],
+            'title' => ['required', 'string', 'max:255'],
+            'h1' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:400'],
+            'body' => ['required', 'string', 'max:50000'],
+        ]);
+        SeoPageContent::create(['path' => $data['path'], 'content' => [
+            'custom_page' => true, 'template' => 'page', 'locale' => 'en', 'eyebrow' => 'Caracal Expeditions',
+            'title' => $data['title'], 'h1' => $data['h1'], 'description' => $data['description'],
+            'subtitle' => $data['description'],
+            'hero_image' => config('seo.site.default_image'), 'hero_alt' => $data['h1'],
+            'sections' => [['title' => $data['h1'], 'paragraphs' => $this->linesToArray($data['body'])]],
+            'faqs' => [], 'related' => [],
+        ]]);
+        return redirect()->route('dashboard.pages.edit', ['path' => $data['path']])
+            ->with('status', 'Page created and published. You can continue editing below.');
+    }
+
     public function editPage(Request $request, SeoPageRegistry $registry)
     {
         $path = (string) $request->query('path', '');
-        $base = $registry->basePages();
+        $base = $registry->pages();
 
         abort_unless(isset($base[$path]), 404);
 
@@ -85,7 +121,7 @@ class DashboardManagementController extends Controller
     public function updatePage(Request $request, SeoPageRegistry $registry)
     {
         $path = (string) $request->query('path', '');
-        $base = $registry->basePages();
+        $base = $registry->pages();
 
         abort_unless(isset($base[$path]), 404);
 
@@ -100,7 +136,7 @@ class DashboardManagementController extends Controller
         ]);
 
         $basePage = $base[$path];
-        $content = [];
+        $content = ! empty($basePage['custom_page']) ? $basePage : [];
 
         foreach (['eyebrow', 'h1', 'title', 'description', 'subtitle', 'hero_image', 'hero_alt'] as $key) {
             $value = $request->input($key);
@@ -177,9 +213,11 @@ class DashboardManagementController extends Controller
             ->with('status', 'Page saved. Your changes are now live on the public website.');
     }
 
-    public function resetPage(Request $request)
+    public function resetPage(Request $request, SeoPageRegistry $registry)
     {
         $path = (string) $request->query('path', '');
+
+        abort_unless(isset($registry->basePages()[$path]), 404);
 
         SeoPageContent::where('path', $path)->delete();
 

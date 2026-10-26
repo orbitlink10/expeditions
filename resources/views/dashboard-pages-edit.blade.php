@@ -453,7 +453,7 @@
                         </div>
                     </form>
 
-                    @if ($hasOverride)
+                    @if ($hasOverride && empty($page['custom_page']))
                         <form class="editor-actions" method="POST" action="{{ route('dashboard.pages.reset', ['path' => $pagePath]) }}">
                             @csrf
                             <button class="dashboard-chip" type="submit">Reset to original content</button>

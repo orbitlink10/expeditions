@@ -3,9 +3,10 @@
 <p class="dashboard-eyebrow">Content library</p>
 <h1>Published pages</h1>
 <p class="management-description">
-    {{ $totalPages }} live SEO pages across {{ $totalLocales }} regions. These pages are generated from the SEO registry
-    (<code>config/seo*.php</code>) and published on the public website. To change wording, update the relevant config file.
+    {{ $totalPages }} live pages across {{ $totalLocales }} regions. Create a page or select Edit to update its content.
 </p>
+
+<p><a class="button button--accent" href="{{ route('dashboard.pages.create') }}">Create new page</a></p>
 
 <div class="pages-admin__summary">
     @foreach ($groups as $locale => $pages)

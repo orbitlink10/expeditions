@@ -34,8 +34,8 @@ class SeoPageRegistry
         $pages = $this->basePages();
 
         foreach ($this->overrides() as $path => $override) {
-            if (isset($pages[$path]) && is_array($override)) {
-                $pages[$path] = array_replace($pages[$path], $override);
+            if (is_array($override) && (isset($pages[$path]) || ($override['custom_page'] ?? false))) {
+                $pages[$path] = array_replace($pages[$path] ?? [], $override);
             }
         }
 
