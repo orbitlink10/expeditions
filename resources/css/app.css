@@ -899,8 +899,9 @@ body.menu-open .menu-drawer {
 
 .footer-bottom {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
     margin-top: 3rem;
     padding-top: 1.4rem;
@@ -910,6 +911,7 @@ body.menu-open .menu-drawer {
 .footer-bottom p {
     width: min(38rem, 100%);
     margin: 0;
+    text-align: center;
     color: rgba(255, 255, 255, 0.68);
     line-height: 1.8;
 }
@@ -2818,7 +2820,7 @@ body.dashboard-sidebar-open .dashboard-sidebar-scrim {
     }
 
     .footer-bottom {
-        display: grid;
+        display: flex;
     }
 }
 
