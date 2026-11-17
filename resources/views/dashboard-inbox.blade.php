@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('layouts.dashboard-management')
 @push('head')
-<link rel="stylesheet" href="{{ asset('css/emails.css') }}?v=1">
+<link rel="stylesheet" href="{{ asset('css/emails.css') }}?v=2">
 @endpush
-@section('content')
+@section('management')
 @php
     $icon = function ($name) { return view('partials.email-icon', ['name' => $name]); };
     $inboxUrl = route('dashboard.inbox.index', array_filter(['q' => request('q'), 'page' => request('page')]));
 @endphp
-<div class="email-app">
+<div class="email-app email-app--embedded">
     <header class="email-header">
         <a class="email-brand" href="{{ route('dashboard.inbox.index') }}" aria-label="Emails home"><span class="email-brand-mark">M</span><span>Emails</span></a>
         <form class="email-search" method="GET" action="{{ route('dashboard.inbox.index') }}" role="search">
@@ -27,13 +27,13 @@
         </nav>
         <div class="email-account"><strong>Connected account</strong><span>{{ $mailboxAddress ?: 'No account connected' }}</span></div>
     </aside>
-    <main class="email-surface" aria-label="Emails">
+    <section class="email-surface" aria-label="Emails">
         <div class="email-toolbar">
             @if($selected)<a class="email-icon-button" href="{{ $inboxUrl }}" aria-label="Back to inbox">{{ $icon('back') }}</a>@else<span class="email-toolbar-label">{{ request('q') ? 'Search results' : 'Inbox' }}</span>@endif
             <a class="email-icon-button" href="{{ $inboxUrl }}" aria-label="Refresh emails" title="Refresh">{{ $icon('refresh') }}</a>
             <span class="email-toolbar-spacer"></span>
             @if($messages && $messages->total())
-                <span class="email-range">{{ $messages->firstItem() ?? 0 }}–{{ $messages->lastItem() ?? 0 }} of {{ number_format($messages->total()) }}</span>
+                <span class="email-range">{{ $messages->firstItem() ?? 0 }}ï¿½{{ $messages->lastItem() ?? 0 }} of {{ number_format($messages->total()) }}</span>
                 @if($messages->previousPageUrl())<a class="email-icon-button" href="{{ $messages->previousPageUrl() }}" aria-label="Newer messages">{{ $icon('left') }}</a>@else<span class="email-icon-button is-disabled">{{ $icon('left') }}</span>@endif
                 @if($messages->nextPageUrl())<a class="email-icon-button" href="{{ $messages->nextPageUrl() }}" aria-label="Older messages">{{ $icon('right') }}</a>@else<span class="email-icon-button is-disabled">{{ $icon('right') }}</span>@endif
             @endif
@@ -41,7 +41,7 @@
         @if(! $configured)
             <div class="email-empty">{{ $icon('inbox') }}<h1>Connect your email</h1><p>Add your IMAP account to start reading received emails.</p><a class="email-action" href="{{ route('dashboard.settings.edit') }}">Configure email</a></div>
         @elseif($mailboxError)
-            <div class="email-notice" role="alert"><h1>We couldn’t load your emails</h1><p>{{ $mailboxError }}</p><a class="email-action" href="{{ route('dashboard.settings.edit') }}">Check email settings</a></div>
+            <div class="email-notice" role="alert"><h1>We couldnï¿½t load your emails</h1><p>{{ $mailboxError }}</p><a class="email-action" href="{{ route('dashboard.settings.edit') }}">Check email settings</a></div>
         @elseif($selected)
             <article class="email-reader">
                 <h1>{{ $selected['subject'] ?: '(No subject)' }} <span class="email-tag">Inbox</span></h1>
@@ -63,8 +63,8 @@
                     <div class="email-empty">{{ $icon('inbox') }}<h1>{{ request('q') ? 'No matching emails' : 'Your inbox is empty' }}</h1><p>{{ request('q') ? 'Try a different sender, subject or keyword.' : 'Received emails will appear here. Use refresh to check for new mail.' }}</p></div>
                 @endforelse
             </div>
-            <footer class="email-footer">{{ $messages->total() }} messages · Compose and reply open your default mail app.</footer>
+            <footer class="email-footer">{{ $messages->total() }} messages ï¿½ Compose and reply open your default mail app.</footer>
         @endif
-    </main>
+    </section>
 </div>
 @endsection

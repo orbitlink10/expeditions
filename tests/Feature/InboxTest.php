@@ -18,7 +18,10 @@ class InboxTest extends TestCase
         $this->get(route('dashboard.inbox.index'))->assertRedirect(route('login'));
         $this->put(route('dashboard.inbox.settings'))->assertRedirect(route('login'));
         $this->withSession(['dashboard_authenticated' => true])->get(route('dashboard.inbox.index'))
-            ->assertOk()->assertSee('Connect your email');
+            ->assertOk()->assertSee('Connect your email')
+            ->assertSee('id="dashboard-sidebar"', false)
+            ->assertSee('dashboard-header', false)
+            ->assertSee('email-app--embedded', false);
     }
 
     public function test_credentials_are_encrypted_preserved_and_never_flashed(): void
