@@ -1,6 +1,6 @@
 @extends('layouts.dashboard-management')
 @push('head')
-<link rel="stylesheet" href="{{ asset('css/emails.css') }}?v=2">
+<link rel="stylesheet" href="{{ asset('css/emails.css') }}?v=3">
 @endpush
 @section('management')
 @php
@@ -21,7 +21,7 @@
     <aside class="email-rail">
         <a class="email-compose" href="mailto:">{{ $icon('edit') }}<span>Compose</span></a>
         <nav aria-label="Email navigation">
-            <a class="email-folder is-active" href="{{ route('dashboard.inbox.index') }}" aria-current="page">{{ $icon('inbox') }}<span>Inbox</span>@if($messages)<strong>{{ number_format($messages->total()) }}</strong>@endif</a>
+            <a class="email-folder is-active" href="{{ route('dashboard.inbox.index') }}" aria-current="page">{{ $icon('inbox') }}<span>Inbox</span>@if(($unreadCount ?? 0) > 0)<strong aria-label="{{ $unreadCount }} unread emails">{{ number_format($unreadCount) }}</strong>@endif</a>
             <a class="email-folder" href="{{ route('dashboard.settings.edit') }}">{{ $icon('settings') }}<span>Email settings</span></a>
             <a class="email-folder" href="{{ route('dashboard') }}">{{ $icon('back') }}<span>Operations dashboard</span></a>
         </nav>
@@ -53,7 +53,7 @@
             <div class="email-tabs"><span class="email-tab is-active">{{ $icon('inbox') }}{{ request('q') ? 'Search results' : 'Primary' }}</span><span class="email-live-note">{{ $mailboxAddress }}</span></div>
             <div class="email-list">
                 @forelse($messages as $message)
-                    <a class="email-row" href="{{ route('dashboard.inbox.index', ['message' => $message['uid'], 'page' => request('page', 1), 'q' => request('q')]) }}">
+                    <a class="email-row{{ ! empty($message['unread']) ? ' is-unread' : '' }}" href="{{ route('dashboard.inbox.index', ['message' => $message['uid'], 'page' => request('page', 1), 'q' => request('q')]) }}">
                         <span class="email-row-envelope">{{ $icon('mail') }}</span>
                         <span class="email-row-from">{{ $message['from'] }}</span>
                         <span class="email-row-subject">{{ $message['subject'] ?: '(No subject)' }}</span>

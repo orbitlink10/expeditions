@@ -295,7 +295,7 @@ class DashboardManagementController extends Controller
         $data = $request->validate(['page' => ['nullable', 'integer', 'min:1', 'max:100000'], 'message' => ['nullable', 'integer', 'min:1'], 'q' => ['nullable', 'string', 'max:200']]);
         $settings = $mailbox->settings();
         $configured = ! empty($settings['inbox_host']) && ! empty($settings['inbox_password']);
-        $mail = ['messages' => null, 'selected' => null];
+        $mail = ['messages' => null, 'selected' => null, 'unreadCount' => 0];
         $error = null;
         if ($configured) {
             try {

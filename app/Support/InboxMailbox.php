@@ -52,16 +52,19 @@ class InboxMailbox
                     'date' => (string) $message->getDate(),
                     'body' => $message->getTextBody() ?: html_entity_decode(strip_tags(preg_replace('/<(script|style)\b[^>]*>.*?<\/\1>/is', '', $message->getHTMLBody() ?: '')), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                 ];
+                $message->setFlag('Seen');
             }
 
             return [
                 'messages' => $messages->through(fn ($message) => [
+                    'unread' => ! $message->hasFlag('Seen') && (int) (string) $message->getUid() !== $uid,
                     'uid' => (int) (string) $message->getUid(),
                     'subject' => (string) $message->getSubject(),
                     'from' => (string) $message->getFrom(),
                     'date' => (string) $message->getDate(),
                 ])->withQueryString(),
                 'selected' => $selected,
+                'unreadCount' => $folder->query()->whereUnseen()->count(),
             ];
         } finally {
             $client->disconnect();

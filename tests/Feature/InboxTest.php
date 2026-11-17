@@ -55,13 +55,18 @@ class InboxTest extends TestCase
         $mock->shouldReceive('settings')->andReturn(['inbox_host' => 'mail.example.com', 'inbox_password' => 'encrypted']);
         $mock->shouldReceive('read')->once()->with(1, null, 'safari')->andReturn([
             'messages' => new LengthAwarePaginator([
-                ['uid' => 42, 'from' => 'traveller@example.com', 'subject' => 'Safari booking', 'date' => '2026-11-17'],
+                ['uid' => 42, 'from' => 'traveller@example.com', 'subject' => 'Safari booking', 'date' => '2026-11-17', 'unread' => true],
+                ['uid' => 41, 'from' => 'reader@example.com', 'subject' => 'Already read', 'date' => '2026-11-16', 'unread' => false],
             ], 1, 50),
             'selected' => null,
+            'unreadCount' => 2,
         ]);
         $this->withSession(['dashboard_authenticated' => true])
             ->get(route('dashboard.inbox.index', ['q' => 'safari']))
             ->assertOk()->assertSee('Emails')->assertSee('Search results')
-            ->assertSee('Safari booking')->assertSee('message=42')->assertSee('emails.css');
+            ->assertSee('Safari booking')->assertSee('message=42')->assertSee('emails.css')
+            ->assertSee('class="email-row is-unread"', false)
+            ->assertSee('class="email-row"', false)
+            ->assertSee('aria-label="2 unread emails"', false);
     }
 }
