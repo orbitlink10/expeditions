@@ -31,7 +31,7 @@ class DashboardManagementController extends Controller
                 ['label' => 'Homepage Content', 'href' => route('dashboard.homepage.edit'), 'code' => 'HC'],
                 ['label' => 'Published Pages', 'href' => route('dashboard.pages.index'), 'code' => 'PG'],
                 ['label' => 'Enquiries', 'href' => route('dashboard.enquiries.index'), 'code' => 'EQ'],
-                ['label' => 'Inbox', 'href' => route('dashboard.inbox.index'), 'code' => 'IB'],
+                ['label' => 'Emails', 'href' => route('dashboard.inbox.index'), 'code' => 'IB'],
                 ['label' => 'Settings', 'href' => route('dashboard.settings.edit'), 'code' => 'ST'],
             ],
         ];
@@ -292,14 +292,18 @@ class DashboardManagementController extends Controller
 
     public function inbox(Request $request, InboxMailbox $mailbox)
     {
-        $data = $request->validate(['page' => ['nullable', 'integer', 'min:1', 'max:100000'], 'message' => ['nullable', 'integer', 'min:1']]);
+        $data = $request->validate(['page' => ['nullable', 'integer', 'min:1', 'max:100000'], 'message' => ['nullable', 'integer', 'min:1'], 'q' => ['nullable', 'string', 'max:200']]);
         $settings = $mailbox->settings();
         $configured = ! empty($settings['inbox_host']) && ! empty($settings['inbox_password']);
         $mail = ['messages' => null, 'selected' => null];
         $error = null;
         if ($configured) {
             try {
-                $mail = $mailbox->read((int) ($data['page'] ?? 1), isset($data['message']) ? (int) $data['message'] : null);
+                $arguments = [(int) ($data['page'] ?? 1), isset($data['message']) ? (int) $data['message'] : null];
+                if (! empty($data['q'])) {
+                    $arguments[] = $data['q'];
+                }
+                $mail = $mailbox->read(...$arguments);
             } catch (\Throwable $exception) {
                 // Do not log exception messages or traces: IMAP errors can contain credentials or email content.
                 Log::warning('Inbox read failed', [
@@ -311,7 +315,7 @@ class DashboardManagementController extends Controller
             }
         }
 
-        return response()->view('dashboard-inbox', [...$this->viewData($request, 'IB'), ...$mail, 'configured' => $configured, 'mailboxError' => $error, 'mailboxAddress' => $settings['inbox_username'] ?? '', 'title' => 'Inbox | Caracal Expeditions'])->header('Cache-Control', 'no-store, private');
+        return response()->view('dashboard-inbox', [...$this->viewData($request, 'IB'), ...$mail, 'configured' => $configured, 'mailboxError' => $error, 'mailboxAddress' => $settings['inbox_username'] ?? '', 'title' => 'Emails | Caracal Expeditions'])->header('Cache-Control', 'no-store, private');
     }
 
     public function saveInboxSettings(Request $request, InboxMailbox $mailbox)
@@ -334,7 +338,7 @@ class DashboardManagementController extends Controller
             }
         });
 
-        return back()->with('status', 'Inbox settings saved. Open Inbox to connect and read emails.');
+        return back()->with('status', 'Inbox settings saved. Open Emails to connect and read emails.');
     }
 
     public function saveSettings(Request $request)

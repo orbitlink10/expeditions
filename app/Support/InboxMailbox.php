@@ -13,7 +13,7 @@ class InboxMailbox
         return DB::table('site_settings')->where('key', 'like', 'inbox_%')->pluck('value', 'key')->all();
     }
 
-    public function read(int $page, ?int $uid = null): array
+    public function read(int $page, ?int $uid = null, string $search = ''): array
     {
         $settings = $this->settings();
         $client = (new ClientManager)->make([
@@ -30,7 +30,11 @@ class InboxMailbox
         try {
             $client->connect();
             $folder = $client->getFolderByPath('INBOX');
-            $messages = $folder->query()->all()->leaveUnread()->setFetchBody(false)->setFetchOrder('desc')->paginate(15, $page, 'page');
+            $query = $folder->query()->all()->leaveUnread()->setFetchBody(false)->setFetchOrder('desc');
+            if ($search !== '') {
+                $query->whereText($search);
+            }
+            $messages = $query->paginate(50, $page, 'page');
             $selected = null;
             if ($uid !== null) {
                 $message = $folder->query()->leaveUnread()->getMessageByUid($uid);

@@ -1,33 +1,70 @@
-@extends('layouts.dashboard-management')
-@section('management')
-<p class="dashboard-eyebrow">Email</p>
-<h1>Inbox</h1>
-<p class="management-description">Read received emails{{ $mailboxAddress ? ' for '.$mailboxAddress : '' }}. Messages are loaded from your mailbox when you open or refresh this page.</p>
-<p><a class="dashboard-chip" href="{{ route('dashboard.inbox.index') }}">Refresh inbox</a> <a class="dashboard-chip" href="{{ route('dashboard.settings.edit') }}">Email settings</a></p>
-@if(! $configured)
-    <div class="dashboard-panel"><h2>Connect your email</h2><p>Configure an IMAP email account in Settings to start reading received messages.</p></div>
-@elseif($mailboxError)
-    <p class="enquiry-alert enquiry-alert--error" role="alert">{{ $mailboxError }}</p>
-@else
-    @if($selected)
-        <article class="dashboard-panel">
-            <h2>{{ $selected['subject'] ?: '(No subject)' }}</h2>
-            <p><strong>From:</strong> {{ $selected['from'] }}</p>
-            <p><strong>Date:</strong> {{ $selected['date'] }}</p>
-            <div style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ $selected['body'] ?: 'This email has no readable text content.' }}</div>
-        </article>
-    @endif
-    <div class="dashboard-panel">
-        <h2>Received messages</h2>
-        @forelse($messages as $message)
-            <article style="padding: 1rem 0; border-bottom: 1px solid #e4eaf0; overflow-wrap: anywhere;">
-                <h3><a href="{{ route('dashboard.inbox.index', ['message' => $message['uid'], 'page' => request('page', 1)]) }}">{{ $message['subject'] ?: '(No subject)' }}</a></h3>
-                <p>{{ $message['from'] }}</p><small>{{ $message['date'] }}</small>
+@extends('layouts.app')
+@push('head')
+<link rel="stylesheet" href="{{ asset('css/emails.css') }}?v=1">
+@endpush
+@section('content')
+@php
+    $icon = function ($name) { return view('partials.email-icon', ['name' => $name]); };
+    $inboxUrl = route('dashboard.inbox.index', array_filter(['q' => request('q'), 'page' => request('page')]));
+@endphp
+<div class="email-app">
+    <header class="email-header">
+        <a class="email-brand" href="{{ route('dashboard.inbox.index') }}" aria-label="Emails home"><span class="email-brand-mark">M</span><span>Emails</span></a>
+        <form class="email-search" method="GET" action="{{ route('dashboard.inbox.index') }}" role="search">
+            <button class="email-icon-button" type="submit" aria-label="Search mail">{{ $icon('search') }}</button>
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="Search mail" aria-label="Search mail" maxlength="200">
+            @if(request('q'))<a class="email-icon-button" href="{{ route('dashboard.inbox.index') }}" aria-label="Clear search">{{ $icon('close') }}</a>@endif
+        </form>
+        <a class="email-icon-button" href="{{ route('dashboard.settings.edit') }}" aria-label="Email settings" title="Email settings">{{ $icon('settings') }}</a>
+        <span class="email-avatar" title="{{ $dashboardUser }}">{{ strtoupper(substr($dashboardUser, 0, 1)) }}</span>
+    </header>
+    <aside class="email-rail">
+        <a class="email-compose" href="mailto:">{{ $icon('edit') }}<span>Compose</span></a>
+        <nav aria-label="Email navigation">
+            <a class="email-folder is-active" href="{{ route('dashboard.inbox.index') }}" aria-current="page">{{ $icon('inbox') }}<span>Inbox</span>@if($messages)<strong>{{ number_format($messages->total()) }}</strong>@endif</a>
+            <a class="email-folder" href="{{ route('dashboard.settings.edit') }}">{{ $icon('settings') }}<span>Email settings</span></a>
+            <a class="email-folder" href="{{ route('dashboard') }}">{{ $icon('back') }}<span>Operations dashboard</span></a>
+        </nav>
+        <div class="email-account"><strong>Connected account</strong><span>{{ $mailboxAddress ?: 'No account connected' }}</span></div>
+    </aside>
+    <main class="email-surface" aria-label="Emails">
+        <div class="email-toolbar">
+            @if($selected)<a class="email-icon-button" href="{{ $inboxUrl }}" aria-label="Back to inbox">{{ $icon('back') }}</a>@else<span class="email-toolbar-label">{{ request('q') ? 'Search results' : 'Inbox' }}</span>@endif
+            <a class="email-icon-button" href="{{ $inboxUrl }}" aria-label="Refresh emails" title="Refresh">{{ $icon('refresh') }}</a>
+            <span class="email-toolbar-spacer"></span>
+            @if($messages && $messages->total())
+                <span class="email-range">{{ $messages->firstItem() ?? 0 }}–{{ $messages->lastItem() ?? 0 }} of {{ number_format($messages->total()) }}</span>
+                @if($messages->previousPageUrl())<a class="email-icon-button" href="{{ $messages->previousPageUrl() }}" aria-label="Newer messages">{{ $icon('left') }}</a>@else<span class="email-icon-button is-disabled">{{ $icon('left') }}</span>@endif
+                @if($messages->nextPageUrl())<a class="email-icon-button" href="{{ $messages->nextPageUrl() }}" aria-label="Older messages">{{ $icon('right') }}</a>@else<span class="email-icon-button is-disabled">{{ $icon('right') }}</span>@endif
+            @endif
+        </div>
+        @if(! $configured)
+            <div class="email-empty">{{ $icon('inbox') }}<h1>Connect your email</h1><p>Add your IMAP account to start reading received emails.</p><a class="email-action" href="{{ route('dashboard.settings.edit') }}">Configure email</a></div>
+        @elseif($mailboxError)
+            <div class="email-notice" role="alert"><h1>We couldn’t load your emails</h1><p>{{ $mailboxError }}</p><a class="email-action" href="{{ route('dashboard.settings.edit') }}">Check email settings</a></div>
+        @elseif($selected)
+            <article class="email-reader">
+                <h1>{{ $selected['subject'] ?: '(No subject)' }} <span class="email-tag">Inbox</span></h1>
+                <div class="email-message-meta"><span class="email-avatar">{{ strtoupper(substr($selected['from'], 0, 1)) }}</span><div><strong>{{ $selected['from'] }}</strong><small>to {{ $mailboxAddress }}</small></div><time>{{ $selected['date'] }}</time></div>
+                <div class="email-message-body">{{ $selected['body'] ?: 'This email has no readable text content.' }}</div>
+                <a class="email-reply" href="mailto:{{ $selected['from'] }}?subject={{ rawurlencode('Re: '.$selected['subject']) }}">{{ $icon('back') }} Reply in mail app</a>
             </article>
-        @empty
-            <p>No emails in this inbox yet.</p>
-        @endforelse
-    </div>
-    {{ $messages->links() }}
-@endif
+        @else
+            <div class="email-tabs"><span class="email-tab is-active">{{ $icon('inbox') }}{{ request('q') ? 'Search results' : 'Primary' }}</span><span class="email-live-note">{{ $mailboxAddress }}</span></div>
+            <div class="email-list">
+                @forelse($messages as $message)
+                    <a class="email-row" href="{{ route('dashboard.inbox.index', ['message' => $message['uid'], 'page' => request('page', 1), 'q' => request('q')]) }}">
+                        <span class="email-row-envelope">{{ $icon('mail') }}</span>
+                        <span class="email-row-from">{{ $message['from'] }}</span>
+                        <span class="email-row-subject">{{ $message['subject'] ?: '(No subject)' }}</span>
+                        <time>{{ $message['date'] }}</time>
+                    </a>
+                @empty
+                    <div class="email-empty">{{ $icon('inbox') }}<h1>{{ request('q') ? 'No matching emails' : 'Your inbox is empty' }}</h1><p>{{ request('q') ? 'Try a different sender, subject or keyword.' : 'Received emails will appear here. Use refresh to check for new mail.' }}</p></div>
+                @endforelse
+            </div>
+            <footer class="email-footer">{{ $messages->total() }} messages · Compose and reply open your default mail app.</footer>
+        @endif
+    </main>
+</div>
 @endsection
