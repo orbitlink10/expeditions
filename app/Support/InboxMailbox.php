@@ -35,6 +35,14 @@ class InboxMailbox
                 $query->whereText($search);
             }
             $messages = $query->paginate(50, $page, 'page');
+            // IMAP servers may return fetched headers in ascending order even
+            // when the query selected the newest UIDs first. Restore arrival
+            // order explicitly before rendering each page.
+            $messages->setCollection(
+                $messages->getCollection()
+                    ->sortByDesc(fn ($message) => (int) (string) $message->getUid())
+                    ->values()
+            );
             $selected = null;
             if ($uid !== null) {
                 $message = $folder->query()->leaveUnread()->getMessageByUid($uid);
