@@ -6,11 +6,13 @@ use App\Models\Enquiry;
 use App\Models\SeoPageContent;
 use App\Support\EnquiryNotifier;
 use App\Support\HomepageContentManager;
+use App\Support\InboxFailure;
 use App\Support\InboxMailbox;
 use App\Support\SeoPageRegistry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class DashboardManagementController extends Controller
@@ -299,7 +301,13 @@ class DashboardManagementController extends Controller
             try {
                 $mail = $mailbox->read((int) ($data['page'] ?? 1), isset($data['message']) ? (int) $data['message'] : null);
             } catch (\Throwable $exception) {
-                $error = 'Unable to read the mailbox. Check the IMAP server, port, username and password in Settings, then refresh. The selected message may also have been removed.';
+                // Do not log exception messages or traces: IMAP errors can contain credentials or email content.
+                Log::warning('Inbox read failed', [
+                    'exception' => get_class($exception),
+                    'source' => basename($exception->getFile()).':'.$exception->getLine(),
+                    'previous_exception' => $exception->getPrevious() ? get_class($exception->getPrevious()) : null,
+                ]);
+                $error = InboxFailure::message($exception);
             }
         }
 
