@@ -23,6 +23,7 @@ class DashboardController extends Controller
                 ['label' => 'Homepage Content', 'href' => route('dashboard.homepage.edit'), 'code' => 'HC'],
                 ['label' => 'Published Pages', 'href' => route('dashboard.pages.index'), 'code' => 'PG'],
                 ['label' => 'Enquiries', 'href' => route('dashboard.enquiries.index'), 'code' => 'EQ'],
+                ['label' => 'Inbox', 'href' => route('dashboard.inbox.index'), 'code' => 'IB'],
                 ['label' => 'Settings', 'href' => route('dashboard.settings.edit'), 'code' => 'ST'],
             ],
             'hero' => [

@@ -14,7 +14,9 @@ class ApplySiteSettings
     {
         if (Schema::hasTable('site_settings')) {
             foreach (DB::table('site_settings')->pluck('value', 'key') as $key => $value) {
-                config(['company.'.$key => $value]);
+                if (! str_starts_with($key, 'inbox_')) {
+                    config(['company.'.$key => $value]);
+                }
             }
             config(['company.direct_email_url' => 'https://mail.google.com/mail/?view=cm&fs=1&to='.rawurlencode(config('company.email')).'&su=Caracal%20Expeditions%20Enquiry']);
         }

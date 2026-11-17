@@ -17,4 +17,17 @@
     <p class="management-description">Email delivery uses the server's configured mail service. If notifications fail, check the SMTP settings in the server environment. Enquiries are saved even when email is unavailable.</p>
     <button class="button button--accent" type="submit">Save settings</button>
 </form>
+<form class="dashboard-panel settings-form" method="POST" action="{{ route('dashboard.inbox.settings') }}">
+    @csrf
+    @method('PUT')
+    <h2>Inbox email connection</h2>
+    <p class="management-description">Connect the email account whose received messages you want to read in Inbox. Enable IMAP with your email provider and use an app password if required.</p>
+    <label>Email address / IMAP username<input type="email" name="inbox_username" value="{{ old('inbox_username', $inboxSettings['inbox_username'] ?? '') }}" required maxlength="254" autocomplete="off"></label>
+    <label>IMAP server<input name="inbox_host" value="{{ old('inbox_host', $inboxSettings['inbox_host'] ?? '') }}" placeholder="mail.example.com" required maxlength="253"></label>
+    <label>IMAP port<input type="number" name="inbox_port" value="{{ old('inbox_port', $inboxSettings['inbox_port'] ?? 993) }}" min="1" max="65535" required><small>Usually 993 for SSL/TLS or 143 for STARTTLS.</small></label>
+    <label>Encryption<select name="inbox_encryption"><option value="ssl" @selected(old('inbox_encryption', $inboxSettings['inbox_encryption'] ?? 'ssl') === 'ssl')>SSL/TLS</option><option value="tls" @selected(old('inbox_encryption', $inboxSettings['inbox_encryption'] ?? 'ssl') === 'tls')>STARTTLS</option></select></label>
+    <label>Password / app password<input type="password" name="inbox_password" autocomplete="new-password" maxlength="1000" @required(empty($inboxSettings['inbox_password']))><small>{{ empty($inboxSettings['inbox_password']) ? 'Enter the mailbox password or provider app password.' : 'A password is saved. Leave blank to keep it.' }} Passwords are stored encrypted.</small></label>
+    <button class="button button--accent" type="submit">Save inbox settings</button>
+    <a class="dashboard-chip" href="{{ route('dashboard.inbox.index') }}">Open Inbox</a>
+</form>
 @endsection

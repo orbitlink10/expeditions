@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\ApplySiteSettings;
+use App\Http\Middleware\EnsureDashboardAuthenticated;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,11 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [\App\Http\Middleware\ApplySiteSettings::class]);
+        $middleware->trimStrings(except: ['inbox_password']);
+        $middleware->web(append: [ApplySiteSettings::class]);
         $middleware->alias([
-            'dashboard.auth' => \App\Http\Middleware\EnsureDashboardAuthenticated::class,
+            'dashboard.auth' => EnsureDashboardAuthenticated::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->dontFlash(['inbox_password']);
     })->create();

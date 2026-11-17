@@ -6,8 +6,10 @@ use App\Models\Enquiry;
 use App\Models\SeoPageContent;
 use App\Support\EnquiryNotifier;
 use App\Support\HomepageContentManager;
+use App\Support\InboxMailbox;
 use App\Support\SeoPageRegistry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -27,6 +29,7 @@ class DashboardManagementController extends Controller
                 ['label' => 'Homepage Content', 'href' => route('dashboard.homepage.edit'), 'code' => 'HC'],
                 ['label' => 'Published Pages', 'href' => route('dashboard.pages.index'), 'code' => 'PG'],
                 ['label' => 'Enquiries', 'href' => route('dashboard.enquiries.index'), 'code' => 'EQ'],
+                ['label' => 'Inbox', 'href' => route('dashboard.inbox.index'), 'code' => 'IB'],
                 ['label' => 'Settings', 'href' => route('dashboard.settings.edit'), 'code' => 'ST'],
             ],
         ];
@@ -96,6 +99,7 @@ class DashboardManagementController extends Controller
             'sections' => [['title' => $data['h1'], 'paragraphs' => $this->linesToArray($data['body'])]],
             'faqs' => [], 'related' => [],
         ]]);
+
         return redirect()->route('dashboard.pages.edit', ['path' => $data['path']])
             ->with('status', 'Page created and published. You can continue editing below.');
     }
@@ -255,6 +259,7 @@ class DashboardManagementController extends Controller
     public function enquiries(Request $request)
     {
         $request->validate(['status' => ['nullable', Rule::in(['new', 'contacted', 'closed'])]]);
+
         return view('dashboard-enquiries', [
             ...$this->viewData($request, 'EQ'),
             'title' => 'Enquiries | Caracal Expeditions',
@@ -266,6 +271,7 @@ class DashboardManagementController extends Controller
     public function updateEnquiry(Request $request, Enquiry $enquiry)
     {
         $enquiry->update($request->validate(['status' => ['required', Rule::in(['new', 'contacted', 'closed'])]]));
+
         return back()->with('status', 'Enquiry status updated.');
     }
 
@@ -273,12 +279,54 @@ class DashboardManagementController extends Controller
     {
         abort_if($enquiry->notification_status === 'sent', 422, 'This notification has already been sent.');
         $sent = $notifier->send($enquiry);
+
         return back()->with($sent ? 'status' : 'error', $sent ? 'Notification sent.' : 'Notification was not sent. Check notification settings and the server mail configuration.');
     }
 
     public function settings(Request $request)
     {
-        return view('dashboard-settings', [...$this->viewData($request, 'ST'), 'title' => 'Settings | Caracal Expeditions']);
+        return view('dashboard-settings', [...$this->viewData($request, 'ST'), 'title' => 'Settings | Caracal Expeditions', 'inboxSettings' => app(InboxMailbox::class)->settings()]);
+    }
+
+    public function inbox(Request $request, InboxMailbox $mailbox)
+    {
+        $data = $request->validate(['page' => ['nullable', 'integer', 'min:1', 'max:100000'], 'message' => ['nullable', 'integer', 'min:1']]);
+        $settings = $mailbox->settings();
+        $configured = ! empty($settings['inbox_host']) && ! empty($settings['inbox_password']);
+        $mail = ['messages' => null, 'selected' => null];
+        $error = null;
+        if ($configured) {
+            try {
+                $mail = $mailbox->read((int) ($data['page'] ?? 1), isset($data['message']) ? (int) $data['message'] : null);
+            } catch (\Throwable $exception) {
+                $error = 'Unable to read the mailbox. Check the IMAP server, port, username and password in Settings, then refresh. The selected message may also have been removed.';
+            }
+        }
+
+        return response()->view('dashboard-inbox', [...$this->viewData($request, 'IB'), ...$mail, 'configured' => $configured, 'mailboxError' => $error, 'mailboxAddress' => $settings['inbox_username'] ?? '', 'title' => 'Inbox | Caracal Expeditions'])->header('Cache-Control', 'no-store, private');
+    }
+
+    public function saveInboxSettings(Request $request, InboxMailbox $mailbox)
+    {
+        $settings = $request->validate([
+            'inbox_host' => ['required', 'string', 'max:253', 'regex:/^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?$/'],
+            'inbox_port' => ['required', 'integer', 'between:1,65535'],
+            'inbox_encryption' => ['required', Rule::in(['ssl', 'tls'])],
+            'inbox_username' => ['required', 'email', 'max:254'],
+            'inbox_password' => [empty($mailbox->settings()['inbox_password']) ? 'required' : 'nullable', 'string', 'max:1000'],
+        ]);
+        if (! empty($settings['inbox_password'])) {
+            $settings['inbox_password'] = Crypt::encryptString($settings['inbox_password']);
+        } else {
+            unset($settings['inbox_password']);
+        }
+        DB::transaction(function () use ($settings) {
+            foreach ($settings as $key => $value) {
+                DB::table('site_settings')->updateOrInsert(['key' => $key], ['value' => (string) $value, 'updated_at' => now(), 'created_at' => now()]);
+            }
+        });
+
+        return back()->with('status', 'Inbox settings saved. Open Inbox to connect and read emails.');
     }
 
     public function saveSettings(Request $request)
@@ -296,6 +344,7 @@ class DashboardManagementController extends Controller
                 DB::table('site_settings')->updateOrInsert(['key' => $key], ['value' => (string) $value, 'updated_at' => now(), 'created_at' => now()]);
             }
         });
+
         return back()->with('status', 'Settings saved.');
     }
 }
