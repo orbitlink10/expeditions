@@ -13,6 +13,24 @@ class InboxTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_attachment_uploads_are_validated_and_passed_to_sender(): void
+    {
+        $data = ['to' => 'guest@example.com', 'subject' => 'Itinerary', 'body' => 'Attached'];
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('itinerary.txt', 'Safari itinerary');
+        $sender = $this->mock(\App\Support\InboxSender::class);
+        $sender->shouldReceive('send')->once()->with(\Mockery::on(fn ($input) =>
+            $input['attachments'][0]->getClientOriginalName() === 'itinerary.txt'
+        ));
+        $this->withSession(['dashboard_authenticated' => true])->post(route('dashboard.inbox.send'), [...$data, 'attachments' => [$file]])
+            ->assertSessionHasNoErrors()->assertRedirect(route('dashboard.inbox.index'));
+        $this->post(route('dashboard.inbox.send'), [...$data, 'attachments' => [\Illuminate\Http\UploadedFile::fake()->create('large.pdf', 2049)]])
+            ->assertSessionHasErrors('attachments.0');
+        $this->post(route('dashboard.inbox.send'), [...$data, 'attachments' => array_map(fn () => \Illuminate\Http\UploadedFile::fake()->create('file.pdf', 1800), range(1, 3))])
+            ->assertSessionHasErrors('attachments');
+        $this->post(route('dashboard.inbox.send'), [...$data, 'attachments' => array_map(fn () => \Illuminate\Http\UploadedFile::fake()->create('file.txt', 1), range(1, 6))])
+            ->assertSessionHasErrors('attachments');
+    }
+
     public function test_compose_and_sending_require_login_and_validate_input(): void
     {
         $this->post(route('dashboard.inbox.send'))->assertRedirect(route('login'));
@@ -60,11 +78,15 @@ class InboxTest extends TestCase
         \Illuminate\Support\Facades\Mail::shouldReceive('build')->once()->with(\Mockery::on(fn ($config) =>
             $config['host'] === 'smtp.example.com' && $config['password'] === 'password' && $config['require_tls'] === true
         ))->andReturn($mailer);
-        app(\App\Support\InboxSender::class)->send(['to' => 'guest@example.com', 'subject' => 'Re: Safari', 'body' => 'Welcome', 'reply_uid' => 42]);
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('itinerary.txt', 'Safari itinerary');
+        app(\App\Support\InboxSender::class)->send(['to' => 'guest@example.com', 'subject' => 'Re: Safari', 'body' => 'Welcome', 'reply_uid' => 42, 'attachments' => [$file]]);
         $sent = $mailer->getSymfonyTransport()->messages()->first()->getOriginalMessage();
         $this->assertSame('desk@example.com', $sent->getFrom()[0]->getAddress());
         $this->assertSame('guest@example.com', $sent->getTo()[0]->getAddress());
         $this->assertSame('Welcome', $sent->getTextBody());
+        $this->assertCount(1, $sent->getAttachments());
+        $this->assertSame('itinerary.txt', $sent->getAttachments()[0]->getFilename());
+        $this->assertSame('Safari itinerary', base64_decode($sent->getAttachments()[0]->bodyToString()));
         $this->assertSame('original@example.com', $sent->getHeaders()->get('In-Reply-To')->getId());
     }
 

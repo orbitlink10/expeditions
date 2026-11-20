@@ -325,12 +325,24 @@ class DashboardManagementController extends Controller
             'subject' => ['required', 'string', 'max:255', 'not_regex:/[\r\n]/'],
             'body' => ['required', 'string', 'max:100000'],
             'reply_uid' => ['nullable', 'integer', 'min:1'],
+            'attachments' => ['nullable', 'array', 'max:5', function ($attribute, $files, $fail) {
+                $total = 0;
+                foreach ($files as $file) {
+                    if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                        $total += $file->getSize();
+                    }
+                }
+                if ($total > 5 * 1024 * 1024) {
+                    $fail('Attachments must not exceed 5 MB in total.');
+                }
+            }],
+            'attachments.*' => ['required', 'file', 'max:2048'],
         ]);
         try {
             app(\App\Support\InboxSender::class)->send($data);
         } catch (\Throwable $exception) {
             Log::warning('Inbox send failed', ['exception' => get_class($exception)]);
-            return back()->withInput($data)->withErrors(['send' => 'Email could not be sent. Check the outgoing SMTP settings and try again.']);
+            return back()->withInput(\Illuminate\Support\Arr::except($data, ['attachments']))->withErrors(['send' => 'Email could not be sent. Check the outgoing SMTP settings and try again. Select any attachments again before retrying.']);
         }
 
         return redirect()->route('dashboard.inbox.index')->with('status', 'Email sent successfully.');

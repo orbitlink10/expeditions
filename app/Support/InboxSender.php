@@ -32,6 +32,12 @@ class InboxSender
         ]);
         $sent = $mailer->raw($data['body'], function (Message $message) use ($settings, $data, $original) {
             $message->from($settings['inbox_username'], config('app.name'))->to($data['to'])->subject($data['subject']);
+            foreach ($data['attachments'] ?? [] as $file) {
+                $message->attach($file->getRealPath(), [
+                    'as' => basename(str_replace('\\', '/', $file->getClientOriginalName())),
+                    'mime' => $file->getMimeType() ?: 'application/octet-stream',
+                ]);
+            }
             if (! empty($original['message_id'])) {
                 $headers = $message->getSymfonyMessage()->getHeaders();
                 $headers->addIdHeader('In-Reply-To', $original['message_id']);

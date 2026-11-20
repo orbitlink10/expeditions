@@ -44,7 +44,7 @@
             @if(empty(app(\App\Support\InboxMailbox::class)->settings()['inbox_smtp_host']))
                 <p class="email-notice">Set up outgoing SMTP in <a href="{{ route('dashboard.settings.edit') }}">Email settings</a> before sending.</p>
             @endif
-            <form class="email-editor" method="POST" action="{{ route('dashboard.inbox.send') }}">
+            <form class="email-editor" method="POST" action="{{ route('dashboard.inbox.send') }}" enctype="multipart/form-data">
                 @csrf
                 <h1>{{ request('reply') ? 'Reply' : 'New message' }}</h1>
                 <p>From: {{ $mailboxAddress }}</p>
@@ -52,6 +52,7 @@
                 <label>To<input type="email" name="to" value="{{ old('to', request('reply') ? ($selected['reply_to'] ?? $selected['from']) : '') }}" maxlength="254" required></label>
                 <label>Subject<input name="subject" value="{{ old('subject', request('reply') ? (preg_match('/^Re:/i', $selected['subject']) ? $selected['subject'] : 'Re: '.$selected['subject']) : '') }}" maxlength="255" required></label>
                 <label>Message<textarea name="body" rows="12" maxlength="100000" required>{{ old('body') }}</textarea></label>
+                <label>Attachments<input type="file" name="attachments[]" multiple><small>Up to 5 files, 2 MB per file and 5 MB total. If sending fails, select the files again before retrying.</small></label>
                 <button class="email-action" type="submit">Send email</button>
                 <a class="email-reply" href="{{ $inboxUrl }}">Cancel</a>
             </form>
