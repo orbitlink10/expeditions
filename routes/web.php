@@ -25,6 +25,7 @@ Route::post('/login', [DashboardAuthController::class, 'store'])->name('login.st
 Route::post('/logout', [DashboardAuthController::class, 'destroy'])->name('logout');
 
 Route::middleware('dashboard.auth')->group(function (): void {
+    Route::post('/dashboard/inbox/send', [DashboardManagementController::class, 'sendEmail'])->middleware('throttle:10,1')->name('dashboard.inbox.send');
     Route::get('/dashboard/inbox', [DashboardManagementController::class, 'inbox'])->name('dashboard.inbox.index');
     Route::put('/dashboard/settings/inbox', [DashboardManagementController::class, 'saveInboxSettings'])->name('dashboard.inbox.settings');
     Route::get('/dashboard/enquiries', [DashboardManagementController::class, 'enquiries'])->name('dashboard.enquiries.index');

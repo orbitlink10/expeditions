@@ -27,7 +27,14 @@
     <label>IMAP port<input type="number" name="inbox_port" value="{{ old('inbox_port', $inboxSettings['inbox_port'] ?? 993) }}" min="1" max="65535" required><small>Usually 993 for SSL/TLS or 143 for STARTTLS.</small></label>
     <label>Encryption<select name="inbox_encryption"><option value="ssl" @selected(old('inbox_encryption', $inboxSettings['inbox_encryption'] ?? 'ssl') === 'ssl')>SSL/TLS</option><option value="tls" @selected(old('inbox_encryption', $inboxSettings['inbox_encryption'] ?? 'ssl') === 'tls')>STARTTLS</option></select></label>
     <label>Password / app password<input type="password" name="inbox_password" autocomplete="new-password" maxlength="1000" @required(empty($inboxSettings['inbox_password']))><small>{{ empty($inboxSettings['inbox_password']) ? 'Enter the mailbox password or provider app password.' : 'A password is saved. Leave blank to keep it.' }} Passwords are stored encrypted.</small></label>
-    <button class="button button--accent" type="submit">Save inbox settings</button>
+    <h2>Outgoing email (SMTP)</h2>
+    <p class="management-description">Use the outgoing server details supplied by your email host to compose and reply in the system.</p>
+    <label>SMTP server<input name="inbox_smtp_host" value="{{ old('inbox_smtp_host', $inboxSettings['inbox_smtp_host'] ?? '') }}" placeholder="mail.example.com" maxlength="253"></label>
+    <label>SMTP port<input type="number" name="inbox_smtp_port" value="{{ old('inbox_smtp_port', $inboxSettings['inbox_smtp_port'] ?? 587) }}" min="1" max="65535"><small>Usually 587 for STARTTLS or 465 for SSL/TLS. Confirm with your email host.</small></label>
+    <label>SMTP encryption<select name="inbox_smtp_encryption"><option value="tls" @selected(old('inbox_smtp_encryption', $inboxSettings['inbox_smtp_encryption'] ?? 'tls') === 'tls')>STARTTLS</option><option value="ssl" @selected(old('inbox_smtp_encryption', $inboxSettings['inbox_smtp_encryption'] ?? 'tls') === 'ssl')>SSL/TLS</option></select></label>
+    <label>SMTP username<input type="email" name="inbox_smtp_username" value="{{ old('inbox_smtp_username', $inboxSettings['inbox_smtp_username'] ?? '') }}" maxlength="254"><small>Leave blank to use the IMAP username.</small></label>
+    <label>SMTP password<input type="password" name="inbox_smtp_password" autocomplete="new-password" maxlength="1000"><small>Leave blank to keep the saved SMTP password, or use the IMAP password if no SMTP password is saved. Stored encrypted.</small></label>
+    <button class="button button--accent" type="submit">Save email settings</button>
     <a class="dashboard-chip" href="{{ route('dashboard.inbox.index') }}">Open Emails</a>
 </form>
 @endsection

@@ -13,12 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->trimStrings(except: ['inbox_password']);
+        $middleware->trimStrings(except: ['inbox_password', 'inbox_smtp_password']);
         $middleware->web(append: [ApplySiteSettings::class]);
         $middleware->alias([
             'dashboard.auth' => EnsureDashboardAuthenticated::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontFlash(['inbox_password']);
+        $exceptions->dontFlash(['inbox_password', 'inbox_smtp_password']);
     })->create();

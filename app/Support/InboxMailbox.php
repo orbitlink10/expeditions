@@ -47,6 +47,8 @@ class InboxMailbox
             if ($uid !== null) {
                 $message = $folder->query()->leaveUnread()->getMessageByUid($uid);
                 $selected = [
+                    'reply_to' => $message->getReplyTo()->first()?->mail ?? $message->getFrom()->first()?->mail,
+                    'message_id' => trim((string) $message->getMessageId(), '<> '),
                     'subject' => (string) $message->getSubject(),
                     'from' => (string) $message->getFrom(),
                     'date' => (string) $message->getDate(),

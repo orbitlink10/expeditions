@@ -13,6 +13,61 @@ class InboxTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_compose_and_sending_require_login_and_validate_input(): void
+    {
+        $this->post(route('dashboard.inbox.send'))->assertRedirect(route('login'));
+        $this->withSession(['dashboard_authenticated' => true])
+            ->get(route('dashboard.inbox.index', ['compose' => 1]))
+            ->assertOk()->assertSee('New message')->assertSee('Send email')->assertSee(route('dashboard.inbox.send'));
+        $this->post(route('dashboard.inbox.send'), ['to' => 'invalid', 'subject' => "Hello\r\nBcc: victim@example.com", 'body' => 'Hello'])
+            ->assertSessionHasErrors(['to', 'subject']);
+    }
+
+    public function test_send_success_and_failure_preserve_draft_without_exposing_errors(): void
+    {
+        $data = ['to' => 'guest@example.com', 'subject' => 'Safari', 'body' => 'Welcome'];
+        $sender = $this->mock(\App\Support\InboxSender::class);
+        $sender->shouldReceive('send')->once()->with($data)->andReturnNull();
+        $this->withSession(['dashboard_authenticated' => true])->post(route('dashboard.inbox.send'), $data)
+            ->assertRedirect(route('dashboard.inbox.index'))->assertSessionHas('status', 'Email sent successfully.');
+        $sender->shouldReceive('send')->once()->andThrow(new \RuntimeException('secret SMTP password'));
+        $this->from(route('dashboard.inbox.index', ['compose' => 1]))->post(route('dashboard.inbox.send'), $data)
+            ->assertSessionHasErrors('send')->assertSessionHasInput('body', 'Welcome');
+        $this->get(route('dashboard.inbox.index', ['compose' => 1]))->assertDontSee('secret SMTP password')->assertSee('Welcome');
+    }
+
+    public function test_smtp_password_is_encrypted_preserved_and_not_flashed(): void
+    {
+        $data = ['inbox_host' => 'mail.example.com', 'inbox_port' => 993, 'inbox_encryption' => 'ssl', 'inbox_username' => 'desk@example.com', 'inbox_password' => 'imap-secret', 'inbox_smtp_host' => 'smtp.example.com', 'inbox_smtp_port' => 587, 'inbox_smtp_encryption' => 'tls', 'inbox_smtp_password' => ' smtp-secret '];
+        $this->withSession(['dashboard_authenticated' => true])->put(route('dashboard.inbox.settings'), $data)->assertSessionHasNoErrors();
+        $stored = DB::table('site_settings')->where('key', 'inbox_smtp_password')->value('value');
+        $this->assertSame(' smtp-secret ', Crypt::decryptString($stored));
+        $this->put(route('dashboard.inbox.settings'), [...$data, 'inbox_smtp_password' => ''])->assertSessionHasNoErrors();
+        $this->assertSame($stored, DB::table('site_settings')->where('key', 'inbox_smtp_password')->value('value'));
+        $this->put(route('dashboard.inbox.settings'), [...$data, 'inbox_smtp_host' => 'bad/host'])
+            ->assertSessionHasErrors('inbox_smtp_host')->assertSessionMissing('_old_input.inbox_smtp_password');
+    }
+
+    public function test_sender_uses_smtp_credentials_and_threads_replies(): void
+    {
+        $mailbox = $this->mock(InboxMailbox::class);
+        $mailbox->shouldReceive('settings')->once()->andReturn([
+            'inbox_username' => 'desk@example.com', 'inbox_password' => Crypt::encryptString('password'),
+            'inbox_smtp_host' => 'smtp.example.com', 'inbox_smtp_port' => 587, 'inbox_smtp_encryption' => 'tls',
+        ]);
+        $mailbox->shouldReceive('read')->once()->with(1, 42)->andReturn(['selected' => ['message_id' => 'original@example.com']]);
+        $mailer = app('mail.manager')->build(['transport' => 'array']);
+        \Illuminate\Support\Facades\Mail::shouldReceive('build')->once()->with(\Mockery::on(fn ($config) =>
+            $config['host'] === 'smtp.example.com' && $config['password'] === 'password' && $config['require_tls'] === true
+        ))->andReturn($mailer);
+        app(\App\Support\InboxSender::class)->send(['to' => 'guest@example.com', 'subject' => 'Re: Safari', 'body' => 'Welcome', 'reply_uid' => 42]);
+        $sent = $mailer->getSymfonyTransport()->messages()->first()->getOriginalMessage();
+        $this->assertSame('desk@example.com', $sent->getFrom()[0]->getAddress());
+        $this->assertSame('guest@example.com', $sent->getTo()[0]->getAddress());
+        $this->assertSame('Welcome', $sent->getTextBody());
+        $this->assertSame('original@example.com', $sent->getHeaders()->get('In-Reply-To')->getId());
+    }
+
     public function test_inbox_requires_login_and_shows_setup_when_unconfigured(): void
     {
         $this->get(route('dashboard.inbox.index'))->assertRedirect(route('login'));

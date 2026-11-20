@@ -16,3 +16,5 @@ body:has(.email-app--embedded){font-family:var(--font-body);color:var(--ink)}
 .email-row .email-row-from,.email-row .email-row-subject,.email-row time{font-weight:400}
 .email-row.is-unread{background:#fff}
 .email-row.is-unread .email-row-from,.email-row.is-unread .email-row-subject,.email-row.is-unread time{font-weight:700;color:#202124}
+
+.email-editor{padding:24px;max-width:850px}.email-editor label{display:block;margin:16px 0}.email-editor input,.email-editor textarea{display:block;width:100%;box-sizing:border-box;padding:12px;border:1px solid #ccd4df;border-radius:8px;font:inherit;margin-top:6px}.email-editor textarea{resize:vertical}.email-editor button{cursor:pointer}.email-editor .email-reply{margin-left:12px}

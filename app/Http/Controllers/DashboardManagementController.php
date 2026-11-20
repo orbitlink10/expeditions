@@ -318,15 +318,43 @@ class DashboardManagementController extends Controller
         return response()->view('dashboard-inbox', [...$this->viewData($request, 'IB'), ...$mail, 'configured' => $configured, 'mailboxError' => $error, 'mailboxAddress' => $settings['inbox_username'] ?? '', 'title' => 'Emails | Caracal Expeditions'])->header('Cache-Control', 'no-store, private');
     }
 
+    public function sendEmail(Request $request)
+    {
+        $data = $request->validate([
+            'to' => ['required', 'email', 'max:254', 'not_regex:/[\r\n]/'],
+            'subject' => ['required', 'string', 'max:255', 'not_regex:/[\r\n]/'],
+            'body' => ['required', 'string', 'max:100000'],
+            'reply_uid' => ['nullable', 'integer', 'min:1'],
+        ]);
+        try {
+            app(\App\Support\InboxSender::class)->send($data);
+        } catch (\Throwable $exception) {
+            Log::warning('Inbox send failed', ['exception' => get_class($exception)]);
+            return back()->withInput($data)->withErrors(['send' => 'Email could not be sent. Check the outgoing SMTP settings and try again.']);
+        }
+
+        return redirect()->route('dashboard.inbox.index')->with('status', 'Email sent successfully.');
+    }
+
     public function saveInboxSettings(Request $request, InboxMailbox $mailbox)
     {
         $settings = $request->validate([
+            'inbox_smtp_host' => ['nullable', 'string', 'max:253', 'regex:/^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?$/'],
+            'inbox_smtp_port' => ['nullable', 'required_with:inbox_smtp_host', 'integer', 'between:1,65535'],
+            'inbox_smtp_encryption' => ['nullable', 'required_with:inbox_smtp_host', Rule::in(['ssl', 'tls'])],
+            'inbox_smtp_username' => ['nullable', 'email', 'max:254'],
+            'inbox_smtp_password' => ['nullable', 'string', 'max:1000'],
             'inbox_host' => ['required', 'string', 'max:253', 'regex:/^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?$/'],
             'inbox_port' => ['required', 'integer', 'between:1,65535'],
             'inbox_encryption' => ['required', Rule::in(['ssl', 'tls'])],
             'inbox_username' => ['required', 'email', 'max:254'],
             'inbox_password' => [empty($mailbox->settings()['inbox_password']) ? 'required' : 'nullable', 'string', 'max:1000'],
         ]);
+        if (! empty($settings['inbox_smtp_password'])) {
+            $settings['inbox_smtp_password'] = Crypt::encryptString($settings['inbox_smtp_password']);
+        } else {
+            unset($settings['inbox_smtp_password']);
+        }
         if (! empty($settings['inbox_password'])) {
             $settings['inbox_password'] = Crypt::encryptString($settings['inbox_password']);
         } else {
